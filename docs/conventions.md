@@ -55,7 +55,7 @@
 - **서버 컴포넌트 우선**: 기본은 서버 컴포넌트. 브라우저 상호작용이 필요할 때만 상단에 `"use client"` 추가.
 - **상태/이펙트 최소화**: 클라이언트 컴포넌트는 꼭 필요한 곳에만.
 - **데이터 패칭**: 가능한 서버에서(서버 컴포넌트/Route Handler/Server Action) 수행하고 props로 전달.
-- **폰트 관리**: `app/fonts/index.ts`에서 `next/font/local`을 사용해 폰트를 정의하고, 레이아웃에서 `className` 또는 CSS 변수로 적용.
+- **폰트 관리**: `src/fonts/index.ts`에서 `next/font/local`을 사용해 폰트를 정의하고, 레이아웃에서 `className` 또는 CSS 변수로 적용.
   - 필요한 경우 `fonts.pretendard.className`을 레이아웃 루트에 연결하고, 모듈 CSS에서는 `var(--pretendard)`를 사용합니다.
 - **라우팅**: 라우트 그룹 사용 시 `(marketing)`, `(app)` 등으로 **레이아웃 분리**하되 URL에는 반영되지 않음.
 - **Route Segment Config**: 점진적 정적 생성(`revalidate`), 동적 렌더링(`dynamic`) 등 설정값은 각 세그먼트의 `page.tsx` 또는 `route.ts`에서 명시적으로 선언합니다.
@@ -74,21 +74,21 @@
 
 ## 6. 커밋 메시지 (Conventional Commits)
 
-- 형식: `<type>(scope)?: <subject>`
+- 형식: `[type] description`
 - type 예시: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `ci`
-- 예: `feat(auth): add email sign-in route`
+- 예: `[feat] add email sign-in route`
 
 가이드
 
 - **커밋 메세지 + 이슈번호**
-  - **[feat](<scope>)** 새로운 기능 추가 및 변경
-  - **[fix](<scope>)** 버그 수정, 예외 처리 개선
-  - **[docs](<scope>)** 문서 추가/수정 (코드 영향 없음)
-  - **[style](<scope>)** UI 스타일 변경, 코드 포맷 조정 (로직 변경 없음)
-  - **[refactor](<scope>)** 동작은 동일하지만 구조 개선
-  - **[test](<scope>)** 테스트 코드 추가/보완/삭제
-  - **[ci](<scope>)** 빌드·배포 파이프라인 및 린트 설정 수정
-  - **[chore](<scope>)** 패키지 업데이트, 환경 설정 등 기타 작업
+  - **[feat]** 새로운 기능 추가 및 변경
+  - **[fix]** 버그 수정, 예외 처리 개선
+  - **[docs]** 문서 추가/수정 (코드 영향 없음)
+  - **[style]** UI 스타일 변경, 코드 포맷 조정 (로직 변경 없음)
+  - **[refactor]** 동작은 동일하지만 구조 개선
+  - **[test]** 테스트 코드 추가/보완/삭제
+  - **[ci]** 빌드·배포 파이프라인 및 린트 설정 수정
+  - **[chore]** 패키지 업데이트, 환경 설정 등 기타 작업
 
 - **영문 소문자**, 명령형 현재 시제
 - 본문 필요 시 한 줄 띄우고 상세 설명
