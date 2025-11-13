@@ -4,7 +4,7 @@
 - [ ] 코드 품질을 위한 자체 리뷰를 진행했습니다.
 - [ ] 관련 문서를 업데이트했습니다.
 - [ ] 빌드/타입 에러 없음
-- [ ] ESLint/Prettier 적용 (`pnpm lint`, `pnpm format`)
+- [ ] ESLint/Prettier 적용 (`bun lint`, `bun format`)
 
 ## 변경 내용 요약
 
