@@ -1,7 +1,8 @@
 'use client'
 
-import cn from '@/utils/cn'
 import type { ButtonHTMLAttributes } from 'react'
+
+import cn from '@/utils/cn'
 
 export default function MainButton(props: ButtonHTMLAttributes<HTMLButtonElement>) {
   const { className, ...rest } = props
