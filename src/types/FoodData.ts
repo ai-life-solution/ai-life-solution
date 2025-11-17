@@ -1,7 +1,18 @@
 import { DBSchema } from 'idb'
 
-export interface Ingredient {
+export interface FoodIngredient {
   name: string
+  amount: number
+  unit: string
+}
+
+export interface FoodNutrients {
+  name: string
+  amount: number
+  unit: string
+}
+
+export interface FoodWeight {
   amount: number
   unit: string
 }
@@ -14,9 +25,9 @@ export default interface FoodData extends DBSchema {
       productCode: string
       productName: string
       allergens: string[]
-      nutrients: { name: string; amount: number; unit: string }[]
-      weight: { amount: number; unit: string }
-      ingredients: Ingredient[]
+      nutrients: FoodNutrients[]
+      weight: FoodWeight
+      ingredients: FoodIngredient[]
     }
     indexes: { 'by-productCode': string }
   }
