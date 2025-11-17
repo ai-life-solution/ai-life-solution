@@ -2,7 +2,8 @@ import Provider from '@/app/Provider'
 import '@/styles/global.css'
 import fonts from '@/fonts'
 import { cn } from '@/utils'
-import { Metadata } from 'next'
+
+import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   icons: {

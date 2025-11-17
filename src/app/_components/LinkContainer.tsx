@@ -1,4 +1,5 @@
 import Link from 'next/link'
+
 import ScanLink from './ScanLink'
 
 export default function LinkContainer() {

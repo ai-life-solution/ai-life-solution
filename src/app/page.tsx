@@ -1,11 +1,9 @@
-import Image from 'next/image'
-import { PAGE_MAIN_CLASS } from './_constants/style'
-import { Metadata } from 'next'
-import Link from 'next/link'
-import { cn } from '@/utils'
-import LinkContainer from './_components/LinkContainer'
 import Description from './_components/Description'
 import Header from './_components/Header'
+import LinkContainer from './_components/LinkContainer'
+import { PAGE_MAIN_CLASS } from './_constants/style'
+
+import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'HearCode',
