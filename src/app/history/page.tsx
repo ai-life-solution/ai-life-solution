@@ -1,7 +1,7 @@
-import FoodData from '@/types/FoodData'
+import type FoodData from '@/types/FoodData'
 
 export default function HistoryPage() {
-  const MOCK_DATA: FoodData['foods']['value'] = {
+  const _MOCK_DATA: FoodData['foodsHistory']['value'] = {
     order: 1,
     productCode: 'ABC123',
     productName: '유기농 오트밀',
