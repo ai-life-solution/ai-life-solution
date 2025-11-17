@@ -25,9 +25,7 @@ function ensureFoodDB(): Promise<IDBPDatabase<FoodData>> {
  * @param entries - 정제 및 정렬할 음식 히스토리 엔트리 배열
  * @returns 정제 및 정렬된 음식 히스토리 엔트리 배열
  */
-export function preprocessFoodsHistory(
-  entries?: FoodHistoryEntry[] | null
-): FoodHistoryEntry[] {
+export function preprocessFoodsHistory(entries?: FoodHistoryEntry[] | null): FoodHistoryEntry[] {
   if (!entries?.length) return []
 
   const sanitized = entries.filter(
@@ -101,9 +99,7 @@ export async function addFoodsHistory(food: FoodHistoryEntry): Promise<void> {
  * @param order - 조회할 음식 히스토리의 order 값
  * @returns 조회된 음식 히스토리 엔트리 또는 존재하지 않으면 undefined
  */
-export async function getFoodHistoryByOrder(
-  order: number
-): Promise<FoodHistoryEntry | undefined> {
+export async function getFoodHistoryByOrder(order: number): Promise<FoodHistoryEntry | undefined> {
   const db = await ensureFoodDB()
   return db.get('foodsHistory', order)
 }

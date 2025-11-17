@@ -1,21 +1,29 @@
-import type FoodData from '@/types/FoodData'
+import FoodHistoryList from './_components/FoodHistoryList'
+import Header from './_components/Header'
+import { PAGE } from './_constants/style'
+
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: '히스토리 | HearCode',
+  description:
+    '바코드를 통해 식품정보를 제공하는 HearCode에 오신 것을 환영합니다. 간편하게 바코드를 스캔하여 영양성분, 알레르기 유발 성분 등 다양한 식품 정보를 확인하세요. 건강한 식습관을 위한 최고의 도우미, HearCode와 함께하세요!',
+  keywords: ['HearCode', '식품정보', '바코드스캔', '영양성분', '알레르기정보'],
+  robots: {
+    index: true,
+    follow: true,
+  },
+}
 
 export default function HistoryPage() {
-  const _MOCK_DATA: FoodData['foodsHistory']['value'] = {
-    order: 1,
-    productCode: 'ABC123',
-    productName: '유기농 오트밀',
-    allergens: ['글루텐', '견과류'],
-    nutrients: [
-      { name: '단백질', amount: 5, unit: 'g' },
-      { name: '지방', amount: 3, unit: 'g' },
-    ],
-    weight: { amount: 500, unit: 'g' },
-    ingredients: [
-      { name: '귀리', amount: 85, unit: '%' },
-      { name: '설탕', amount: 10, unit: '%' },
-      { name: '소금', amount: 5, unit: '%' },
-    ],
-  }
-  return <div>History Page</div>
+  return (
+    <div className={PAGE.CONTAINER}>
+      <div className="max-w-[600px] mx-auto">
+        <Header />
+        <main className={PAGE.MAIN}>
+          <FoodHistoryList />
+        </main>
+      </div>
+    </div>
+  )
 }
