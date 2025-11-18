@@ -1,4 +1,4 @@
-import { FoodHistoryEntry } from '@/types/FoodData'
+import type { FoodHistoryEntry } from '@/types/FoodData'
 
 export const MOCK_DATA: FoodHistoryEntry[] = [
   {

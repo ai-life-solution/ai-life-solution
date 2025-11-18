@@ -1,5 +1,7 @@
 import Link from 'next/link'
+
 import { Home, Scan, Bookmark } from 'lucide-react'
+
 import { STYLE } from './_constants/style'
 
 const navItems = [
