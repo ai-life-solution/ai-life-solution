@@ -16,7 +16,7 @@ export function FoodHistoryItem(props: FoodHistoryItemProps) {
   const actions: PopoverAction[] = [{ id: 'delete', label: '삭제', onClick: () => { return }, isDanger: true }]
 
   return (
-    <li className="flex bg-white rounded-md">
+    <li className="flex bg-white rounded-lg">
       <Link className="p-4 truncate w-full" href={`/history/${props.item.order}`}>
         {item.productName}
       </Link>
