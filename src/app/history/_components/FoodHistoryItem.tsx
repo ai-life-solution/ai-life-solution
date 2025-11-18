@@ -12,7 +12,7 @@ export function FoodHistoryItem(props: FoodHistoryItemProps) {
   const { item } = props
   return (
     <li className="flex bg-white rounded-md">
-      <Link className="p-4 truncate" href={`/history/${props.item.order}`}>
+      <Link className="p-4 truncate w-full" href={`/history/${props.item.order}`}>
         {item.productName}
       </Link>
     </li>
