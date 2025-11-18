@@ -2,13 +2,14 @@ import { cn } from '@/utils'
 
 export const PAGE = {
   CONTAINER: cn('bg-(--color-etc-2)', 'w-full', 'min-h-screen'),
-  CONTENTS: cn('p-8', 'bg-gray-100', 'rounded-t-3xl', 'min-h-[calc(100vh_-_136px)]'),
+  CONTENTS: cn('p-8', 'bg-gray-100', 'rounded-t-3xl', 'min-h-[calc(100vh_-_120px)]'),
   MAIN: cn(
     'flex',
     'flex-col',
     'items-center',
     'w-full',
     'h-full',
+    'min-h-[calc(100vh_-_136px)]'
   ),
 } as const
 
