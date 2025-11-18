@@ -1,4 +1,4 @@
-# Study Club Tracker – Coding Conventions
+# AI Life Solution – Coding Conventions
 
 본 문서는 본 프로젝트의 코딩/네이밍/브랜치/커밋/PR 규칙을 정의합니다.
 
