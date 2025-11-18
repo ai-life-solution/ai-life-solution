@@ -1,3 +1,4 @@
+import NavigationBar from '@/components/NavigationBar'
 import FoodHistoryList from './_components/FoodHistoryList'
 import Header from './_components/Header'
 import { PAGE } from './_constants/style'
@@ -20,9 +21,14 @@ export default function HistoryPage() {
     <div className={PAGE.CONTAINER}>
       <div className="max-w-[600px] mx-auto">
         <Header />
-        <main className={PAGE.MAIN}>
-          <FoodHistoryList />
-        </main>
+        <div className={PAGE.CONTENTS}>
+          <main className={PAGE.MAIN}>
+            <FoodHistoryList />
+          </main>
+          <footer>
+            <NavigationBar />
+          </footer>
+        </div>
       </div>
     </div>
   )
