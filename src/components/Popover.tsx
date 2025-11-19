@@ -51,7 +51,7 @@ interface PopoverProps {
   /**
    * 팝오버 메뉴 정렬 (기본값: right)
    */
-  align?: 'left' | 'right',
+  align?: 'left' | 'right'
 
   ariaLabel?: string
 }
@@ -75,7 +75,13 @@ interface PopoverProps {
  * />
  * ```
  */
-export default function Popover({ trigger, actions, className, align = 'right', ariaLabel }: PopoverProps) {
+export default function Popover({
+  trigger,
+  actions,
+  className,
+  align = 'right',
+  ariaLabel,
+}: PopoverProps) {
   const [isOpen, setIsOpen] = useState(false)
   const popoverRef = useRef<HTMLDivElement>(null)
 
