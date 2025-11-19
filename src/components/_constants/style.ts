@@ -24,8 +24,16 @@ export const STYLE = {
       'justify-center',
       'w-full',
       'h-full',
-      'hover:text-[#F0E491]',
+      'hover:text-(--color-accent)',
       'transition-colors'
+    ),
+    LINK_ACTIVE: cn(
+      'flex',
+      'items-center',
+      'justify-center',
+      'w-full',
+      'h-full',
+      'text-(--color-accent)'
     ),
   },
   POPOVER: {
