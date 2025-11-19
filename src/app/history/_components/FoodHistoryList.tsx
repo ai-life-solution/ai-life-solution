@@ -6,7 +6,7 @@ import { FoodHistoryItem } from './FoodHistoryItem'
 
 export default function FoodHistoryList() {
   return (
-    <ul className="flex flex-col w-full gap-4 overflow-y-auto">
+    <ul className="flex flex-col w-full gap-4 overflow-y-auto scrollbar-hide">
       {MOCK_DATA.toReversed().map(item => (
         <FoodHistoryItem key={item.order} item={item} />
       ))}

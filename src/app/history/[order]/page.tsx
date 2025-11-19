@@ -2,7 +2,6 @@ import HistoryInfoContainer from './_components/HistoryInfoContainer'
 
 import type { Metadata } from 'next'
 
-
 export const metadata: Metadata = {
   title: '히스토리 상세정보 | HearCode',
   description:
