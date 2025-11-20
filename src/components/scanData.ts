@@ -18,17 +18,11 @@ export interface FoodQrResponse<T> {
 
 
 // 기본 정보
-export interface RawStandardInfo {
+export interface ProductInfo {
   brcdNo: string
   prdctNm: string
   ctv:string //중량
   foodSeCdNm?: string //식품분류
-}
-export interface StandardInfo {
-  name:string
-  amount:string
-  unit:string
-  dailyRatio:number
 }
 
 // 인증 정보
@@ -50,7 +44,7 @@ export interface Ingredient {
 }
 
 // 영양 성분 정보
-export interface RawNutrition{
+export interface RawNutritionItem {
   nirwmtNm: string;
   cta: number;
   igrdUcd: string;
@@ -58,22 +52,20 @@ export interface RawNutrition{
 }
 
 export interface Nutrition {       
-  name: string; // 영양소 이름 (예: "나트륨")
-  amount: number;  // 함량 값 (예: 1270)
-  unit: string;// 단위 (예: "mg")
-  dailyRatio?: number; //일일 영양성분 기준치 (%)
+  nirwmtNm: string; // 영양소 이름 (예: "나트륨")
+  cta: number;  // 함량 값 (예: 1270)
+  igrdUcd: string;// 단위 (예: "mg")
+  ntrtnRt?: number; //일일 영양성분 기준치 (%)
 }
 
 // 스캔결과 데이터
 export interface ScanResultData {
   barcode: string
-  productName:string
-  weight:string
-  category?:string
+  productName: string
   tags: string[]
   ingredients: string[]
   allergens: string[]
-  nutritions: Nutrition[]
+  nutrition: string[]
   certifications: Certification[]
   timestamp: number
 }

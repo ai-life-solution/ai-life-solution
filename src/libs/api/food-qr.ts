@@ -38,7 +38,7 @@ export const fetchProduct = (barcode: string) => requestProxy('/qr1003/F003', ba
 // 원재료 정보(푸드QR원재료정보)
 export const fetchIngredientInfo = (barcode: string) => requestProxy('/qr1007/F007', barcode)
 
-// 영양표시 정보 (푸드QR)
+// 영양표시 정보 (푸드QR 영양표시성분 정보)
 export const fetchNutritionInfo = (barcode: string) => requestProxy('/qr1008/F008', barcode)
 
 // 알러지 정보(푸드QR알레르기정보)
