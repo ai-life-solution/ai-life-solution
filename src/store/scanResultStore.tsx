@@ -9,7 +9,7 @@ import {
   fetchProduct,
 } from '@/libs/api/food-qr'
 import type { ScanResultData } from '@/types/scanData'
-import transformResData from '@/utils/foodQrtransformer'
+import transformResData from '@/utils/foodQrTransformer'
 
 export type Status = 'loading' | 'success' | 'error'
 
