@@ -1,3 +1,4 @@
+import type { Nutrition } from '@/components/scanData'
 import type {
   Allergen,
   Certification,
@@ -30,7 +31,7 @@ function transformIngredients(ingredientRes: FoodQrResponse<Ingredient>): string
   return ingredients
 }
 
-function transformNutritions(nutritionRes: FoodQrResponse<RawNutrition>) {
+function transformNutritions(nutritionRes: FoodQrResponse<RawNutrition>): Nutrition[] {
   const items = Array.isArray(nutritionRes.response.body.items.item)
     ? (nutritionRes.response.body.items.item as RawNutrition[])
     : [nutritionRes.response.body.items.item]
@@ -51,7 +52,7 @@ function transformAllergens(allergyRes: FoodQrResponse<Allergen>): string[] {
   return allergens
 }
 
-function transformCertifications(certRes: FoodQrResponse<Certification>) {
+function transformCertifications(certRes: FoodQrResponse<Certification>): Certification[] {
   const items = Array.isArray(certRes.response.body.items.item)
     ? (certRes.response.body.items.item as Certification[])
     : [certRes.response.body.items.item as Certification]
