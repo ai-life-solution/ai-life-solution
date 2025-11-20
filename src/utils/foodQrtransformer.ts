@@ -1,9 +1,9 @@
-import type { Nutrition } from '@/components/scanData'
 import type {
   Allergen,
   Certification,
   FoodQrResponse,
   Ingredient,
+  Nutrition,
   RawNutrition,
   RawStandardInfo,
   ScanResultData,
