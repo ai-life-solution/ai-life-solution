@@ -3,8 +3,13 @@
   --color-secondary: #ffffff;
   --color-third: #121212;
   --color-accent: #f0e491;
+  --color-accent-red: #e92222;
   --color-etc-1: #addb9d;
   --color-etc-2: #f8feda;
+  --color-etc-3: #61af2b;
+  --color-grade-good: #93ec4b;
+  --color-grade-standard: #f0cd48;
+  --color-grade-danger: #d12f21;
 
   /* 그레이스케일 (100 ~ 900) */
   --gray-100: #f5f5f5;
