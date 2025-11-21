@@ -5,7 +5,7 @@ export const MODAL_INNER_CLASS = cn(
   'bg-white',
   'gap-3',
   'w-full',
-  'h-2/3',
+  'h-[80vh]',
   'absolute',
   'flex',
   'flex-col',

@@ -1,9 +1,8 @@
 'use client'
 
-import { useEffect } from 'react'
-
 import { X } from 'lucide-react'
 
+import NavigationBar from '@/components/NavigationBar'
 import { useScanResultStore } from '@/store/scanResultStore'
 
 import { DIALOG_CLASS, MODAL_INNER_CLASS } from './_constants/style'
@@ -18,12 +17,7 @@ interface ScanResultModalProps {
 }
 
 export default function ScanResultModal({ open, onClose }: ScanResultModalProps) {
-  const { scan, data, status } = useScanResultStore()
-
-  useEffect(() => {
-    const testBarcode = '08801045121086'
-    scan(testBarcode)
-  }, [scan])
+  const { data, status } = useScanResultStore()
 
   if (!open) return null
   if (!data) return <div>there is no data</div>
@@ -33,7 +27,7 @@ export default function ScanResultModal({ open, onClose }: ScanResultModalProps)
       <div className={MODAL_INNER_CLASS}>
         {/* 닫기버튼 */}
         <button
-          onClick={() => onClose}
+          onClick={onClose}
           className="absolute top-4 right-4 p-2 text-gray-500"
           aria-label="닫기"
         >
@@ -48,7 +42,9 @@ export default function ScanResultModal({ open, onClose }: ScanResultModalProps)
         {/* 슬라이드 */}
         <ScanResultSlide data={data} />
         {/* 저장 버튼 */}
-        <SaveButton className="mt-auto" />
+        <SaveButton className="mb-20" />
+        {/* 네비게이션 바 */}
+        <NavigationBar />
       </div>
     </dialog>
   )
