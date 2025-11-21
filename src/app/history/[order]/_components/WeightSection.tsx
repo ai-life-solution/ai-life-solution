@@ -1,21 +1,16 @@
 'use client'
 
-import type { FoodWeight } from '@/types/FoodData'
-
 import { STYLE } from '../_constants/style'
 
 interface WeightSectionProps {
-  weight: FoodWeight
+  data: string
 }
 
-export default function WeightSection({ weight }: WeightSectionProps) {
+export default function WeightSection({ data }: WeightSectionProps) {
   return (
     <section className={STYLE.HISTORY_INFO.SECTION_TOP}>
       <h3 className={STYLE.HISTORY_INFO.SECTION_H3}>총 내용량</h3>
-      <p className={STYLE.HISTORY_INFO.PARAGRPAPH}>
-        {weight.amount}
-        {weight.unit}
-      </p>
+      <p className={STYLE.HISTORY_INFO.PARAGRPAPH}>{data}</p>
     </section>
   )
 }

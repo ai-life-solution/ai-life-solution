@@ -32,11 +32,11 @@ export function preprocessFoodsHistory(entries?: FoodHistoryEntry[] | null): Foo
     (entry): entry is FoodHistoryEntry =>
       !!entry &&
       typeof entry.order === 'number' &&
-      typeof entry.productCode === 'string' &&
+      typeof entry.barcode === 'string' &&
       typeof entry.productName === 'string'
   )
 
-  const sorted = [...sanitized].sort((a, b) => b.order - a.order)
+  const sorted = [...sanitized].sort((a, b) => (b.order ?? 0) - (a.order ?? 0))
 
   return sorted.slice(0, MAX_FOODS_HISTORY)
 }
@@ -61,7 +61,7 @@ async function enforceFoodsHistoryLimit(
   await Promise.all(
     entries
       .filter(entry => !orderWhitelist.has(entry.order))
-      .map(entry => db.delete('foodsHistory', entry.order))
+      .map(entry => db.delete('foodsHistory', entry.order as number))
   )
 }
 

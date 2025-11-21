@@ -3,11 +3,11 @@ import type {
   Certification,
   FoodQrResponse,
   Ingredient,
-  Nutrition,
+  FoodNutrient,
   RawNutrition,
   RawStandardInfo,
-  ScanResultData,
-} from '@/types/scanData'
+  FoodItem,
+} from '@/types/FoodItem'
 
 import { parseHtml } from './parseHtml'
 
@@ -31,7 +31,7 @@ function transformIngredients(ingredientRes: FoodQrResponse<Ingredient>): string
   return ingredients
 }
 
-function transformNutritions(nutritionRes: FoodQrResponse<RawNutrition>): Nutrition[] {
+function transformNutritions(nutritionRes: FoodQrResponse<RawNutrition>): FoodNutrient[] {
   const items = Array.isArray(nutritionRes.response.body.items.item)
     ? (nutritionRes.response.body.items.item as RawNutrition[])
     : [nutritionRes.response.body.items.item]
@@ -90,7 +90,7 @@ export default function transformResData({
   nutritionRes,
   certRes,
   barcode,
-}: TransformParams): ScanResultData {
+}: TransformParams): FoodItem {
   const standardInfo = transfromStandardInfo(productRes)
 
   // 제품명

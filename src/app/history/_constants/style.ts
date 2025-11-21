@@ -30,7 +30,7 @@ export const STYLE = {
     BUTTON: cn('w-fit', 'p-2', 'cursor-pointer'),
   },
   HISTORY_LIST: {
-    LIST: cn('flex', 'flex-col', 'w-full', 'gap-4', 'overflow-y-auto', 'scrollbar-hide'),
+    LIST: cn('flex', 'flex-col', 'w-full', 'gap-4', 'overflow-y-scroll', 'scrollbar-hide', 'min-h-[calc(100vh_-_168px)]'),
   },
   HISTORY_ITEM: {
     ITEM: cn('flex', 'bg-white', 'rounded-lg'),

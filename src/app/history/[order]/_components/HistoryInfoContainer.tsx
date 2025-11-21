@@ -4,7 +4,8 @@ import { MOCK_DATA } from '../../_constants/mockData'
 import { STYLE } from '../_constants/style'
 
 import AllergenSection from './AllergenSection'
-import AmountSection from './AmountSection'
+import IngridientSection from './IngridientSection'
+import NutritionSection from './NutritionSection'
 import WeightSection from './WeightSection'
 
 interface HistoryInfoContainerProps {
@@ -18,13 +19,13 @@ export default function HistoryInfoContainer({ order }: HistoryInfoContainerProp
       {data ? (
         <>
           <h2 className={STYLE.HISTORY_INFO.H2}>{data.productName}</h2>
-          <p className={STYLE.HISTORY_INFO.PARAGRPAPH}>상품 코드: {data.productCode}</p>
+          <p className={STYLE.HISTORY_INFO.PARAGRPAPH}>상품 코드: {data.barcode}</p>
           <p className={STYLE.HISTORY_INFO.PARAGRPAPH}>주문 번호: {data.order}</p>
 
-          <WeightSection weight={data.weight} />
+          <WeightSection data={data.weight} />
           <AllergenSection allergens={data.allergens} />
-          <AmountSection source={data.nutrients} title="영양 성분" />
-          <AmountSection source={data.ingredients} title="원재료명 및 함량" />
+          <NutritionSection source={data.nutritions} title="영양 성분" />
+          <IngridientSection source={data.ingredients} title="원재료명 및 함량" />
         </>
       ) : (
         <p>데이터가 없습니다.</p>

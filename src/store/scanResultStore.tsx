@@ -8,14 +8,14 @@ import {
   fetchNutritionInfo,
   fetchProduct,
 } from '@/libs/api/food-qr'
-import type { ScanResultData } from '@/types/scanData'
+import type { FoodItem } from '@/types/FoodItem'
 import transformResData from '@/utils/foodQrTransformer'
 
 export type Status = 'loading' | 'success' | 'error'
 
 interface ScanResultStore {
   status: Status
-  data: ScanResultData | null
+  data: FoodItem | null
   tags: string[]
   scan: (barcode: string) => Promise<void>
 }

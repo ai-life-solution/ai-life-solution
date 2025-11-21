@@ -76,25 +76,18 @@ export interface RawNutrition {
   ntrtnRt?: number
 }
 
-/**
- * 앱 내부에서 사용하는 가공된 영양 정보
- */
-export interface Nutrition {
-  /** 영양소 이름 (예: "나트륨") */
+export interface FoodNutrient {
   name: string
-  /** 함량 값 (예: 1270) */
   amount: number
-  /** 단위 (예: "mg") */
   unit: string
-  /** 일일 영양성분 기준치 (%) */
   dailyRatio?: number
 }
 
 /**
- * UI 렌더링을 위해 가공된 최종 스캔 결과 데이터
- * - 여러 API(기본정보, 영양, 알러지 등)의 응답을 하나로 병합 및 정제한 형태입니다.
+ * 앱 전역에서 사용하는 통합 식품 데이터 모델
+ * - 스캔 결과와 히스토리 저장소 모두 동일한 형태를 공유합니다.
  */
-export interface ScanResultData {
+export interface FoodItem {
   /** 스캔한 상품의 바코드 번호 (Key 역할) */
   barcode: string
 
@@ -117,7 +110,7 @@ export interface ScanResultData {
   allergens: string[]
 
   /** 영양정보 객체 배열 (영양소이름, 함량, 단위, 일일영양성분기준치) */
-  nutritions: Nutrition[]
+  nutritions: FoodNutrient[]
 
   /** 인증 정보 객체 배열 (HACCP 등) */
   certifications: Certification[]
@@ -126,4 +119,6 @@ export interface ScanResultData {
    * - 히스토리 정렬 또는 캐시 만료 체크에 사용
    */
   timestamp: number
+
+  order?: number
 }
