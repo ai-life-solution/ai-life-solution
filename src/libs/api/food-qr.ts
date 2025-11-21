@@ -1,28 +1,3 @@
-const BASE_URL = process.env.NEXT_PUBLIC_FOOD_QR_URL
-const API_KEY = process.env.NEXT_PUBLIC_FOOD_QR_API_KEY as string
-
-interface RequestParams {
-  servicePath: string
-  barcode: string
-  numOfRows?: number
-  pageNo?: number
-}
-
-export async function requestFoodQrApi({
-  servicePath,
-  barcode,
-  numOfRows = 10,
-  pageNo = 1,
-}: RequestParams) {
-  const encodedKey = encodeURIComponent(API_KEY)
-  const url = `${BASE_URL}${servicePath}?accessKey=${encodedKey}&numOfRows=${numOfRows}&pageNo=${pageNo}&_type=json&brcdNo=${barcode}`
-
-  const res = await fetch(url)
-  if (!res.ok) throw new Error('food qr api error occured')
-  const data = await res.json()
-  return data
-}
-
 // [클라이언트용] 내 Next.js 서버(/api/food-qr)로 요청을 보내는 헬퍼 함수
 async function requestProxy(path: string, barcode: string) {
   // app/api/food-qr/route.ts 로 요청
