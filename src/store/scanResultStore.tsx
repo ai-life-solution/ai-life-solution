@@ -3,13 +3,13 @@ import { createJSONStorage, persist } from 'zustand/middleware'
 
 import {
   fetchAllergyInfo,
-  fetchNutritionInfo,
-  fetchIngredientInfo,
   fetchCertificationInfo,
+  fetchIngredientInfo,
+  fetchNutritionInfo,
   fetchProduct,
 } from '@/libs/api/food-qr'
-import type { Allergen, Certification, ScanResultData } from '@/types/scanData'
-import { parseHtml } from '@/utils/parseHtml'
+import type { ScanResultData } from '@/types/scanData'
+import transformResData from '@/utils/foodQrTransformer'
 
 export type Status = 'loading' | 'success' | 'error'
 
@@ -27,6 +27,12 @@ export const useScanResultStore = create<ScanResultStore>()(
       data: null,
       tags: [],
 
+      /**
+       * 바코드를 받아 상품 정보를 조회하는 비동기 액션
+       * - 5개의 푸드 QR API(기본, 원재료, 알러지, 영양, 인증)를 병렬로 호출합니다.
+       * - 응답받은 데이터를 UI용 포맷으로 변환하여 data 상태에 저장합니다.
+       * @param barcode - 조회할 상품의 바코드 번호
+       */
       scan: async (barcode: string) => {
         set({ status: 'loading' })
         try {
@@ -37,36 +43,15 @@ export const useScanResultStore = create<ScanResultStore>()(
             fetchNutritionInfo(barcode),
             fetchCertificationInfo(barcode),
           ])
-          const standardInfo = productRes
-          const itemsIngredient = ingredientRes?.response?.body?.items?.item.prvwCn ?? ''
-          const itemsAllergy = allergyRes?.response?.body?.items?.item ?? []
-          const itemsCert = certRes?.response?.body?.items?.item ?? []
 
-          const productName = standardInfo.prdctNm ?? itemsAllergy[0]?.prdctNm ?? ''
-          const ingredients = parseHtml(itemsIngredient)
-          const allergens = itemsAllergy.map((i: Allergen) => i.algCsgMtrNm).filter(Boolean)
-          const certifications = (itemsCert as Certification[])
-            .filter(c => c.certYn === 'Y')
-            .map(c => ({
-              certNm: c.certNm,
-              certIng: c.certIng,
-              certYn: c.certYn,
-            }))
-          const tags: string[] = []
-          if (productName) tags.push(`${productName}`)
-          if (barcode) tags.push(`${barcode}`)
-          if (standardInfo.foodSeCdNm) tags.push(`${standardInfo.foodSeCdNm}`)
-
-          const newData: ScanResultData = {
+          const newData = transformResData({
+            productRes,
+            ingredientRes,
+            allergyRes,
+            nutritionRes,
+            certRes,
             barcode,
-            productName,
-            tags,
-            ingredients,
-            allergens,
-            nutrition: nutritionRes,
-            certifications,
-            timestamp: Date.now(),
-          }
+          })
 
           // ui 상태 세팅
           set({ data: newData, status: 'success' })
