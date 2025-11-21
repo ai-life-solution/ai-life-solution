@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-import { requestFoodQrApi } from '@/libs/api/food-qr'
+import { requestFoodQrApi } from '@/libs/api/food-qr.server'
 
 /**
  * GET /api/foodQr
