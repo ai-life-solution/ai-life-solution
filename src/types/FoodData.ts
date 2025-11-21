@@ -2,7 +2,6 @@ import type { FoodItem } from '@/types/FoodItem'
 
 import type { DBSchema } from 'idb'
 
-
 /**
  * IndexedDB에 저장되는 식품 데이터 스키마입니다.
  */
