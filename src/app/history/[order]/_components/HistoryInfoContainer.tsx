@@ -1,6 +1,10 @@
 'use client'
 
-import { MOCK_DATA } from '../../_constants/mockData'
+import { useEffect, useState } from 'react'
+
+import { useFoodStore } from '@/store/useFoodsHistoryStore'
+import type { FoodHistoryEntry } from '@/types/FoodData'
+
 import { STYLE } from '../_constants/style'
 
 import AllergenSection from './AllergenSection'
@@ -9,11 +13,17 @@ import NutritionSection from './NutritionSection'
 import WeightSection from './WeightSection'
 
 interface HistoryInfoContainerProps {
-  order: string
+  order: number
 }
 
 export default function HistoryInfoContainer({ order }: HistoryInfoContainerProps) {
-  const data = MOCK_DATA.find(item => item.order === Number(order))
+  const promise = useFoodStore(state => state.getFoodItemByOrder(order))
+  const [data, setData] = useState<FoodHistoryEntry | undefined>(undefined)
+
+  useEffect(() => {
+    promise.then(setData)
+  }, [promise])
+
   return (
     <article className={STYLE.HISTORY_INFO.CONTAINER}>
       {data ? (
@@ -28,7 +38,7 @@ export default function HistoryInfoContainer({ order }: HistoryInfoContainerProp
           <IngridientSection source={data.ingredients} title="원재료명 및 함량" />
         </>
       ) : (
-        <p>데이터가 없습니다.</p>
+        <p className="text-center text-sm text-gray-500">데이터를 불러오지 못했습니다.</p>
       )}
     </article>
   )
