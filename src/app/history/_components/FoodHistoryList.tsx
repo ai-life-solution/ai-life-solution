@@ -26,19 +26,19 @@ export default function FoodHistoryList() {
   }, [isInitialized, loadFoods])
 
   if (isLoading && !isInitialized) {
-    return <p className="text-center text-sm text-gray-500">히스토리를 불러오는 중입니다...</p>
+    return <p className={STYLE.STATUS_MESSAGE.INFO}>히스토리를 불러오는 중입니다...</p>
   }
 
   if (lastError) {
     return (
-      <p className="text-center text-sm text-red-500">
+      <p className={STYLE.STATUS_MESSAGE.ERROR}>
         히스토리를 불러오지 못했습니다. 다시 시도해주세요 : {lastError}
       </p>
     )
   }
 
   if (foods.length === 0) {
-    return <p className="text-center text-sm text-gray-500">저장된 히스토리가 없습니다.</p>
+    return <p className={STYLE.STATUS_MESSAGE.INFO}>저장된 히스토리가 없습니다.</p>
   }
 
   return (

@@ -36,11 +36,11 @@ export default function HistoryInfoContainer({ order }: HistoryInfoContainerProp
   let content: React.ReactNode
 
   if (!isInitialized || isLoading) {
-    content = <p className="text-center text-sm text-gray-500">데이터를 불러오는 중입니다...</p>
+    content = <p className={STYLE.HISTORY_INFO.STATUS_MESSAGE.INFO}>데이터를 불러오는 중입니다...</p>
   } else if (lastError) {
-    content = <p className="text-center text-sm text-red-500">데이터를 불러오지 못했습니다. 다시 시도해주세요.</p>
+    content = <p className={STYLE.HISTORY_INFO.STATUS_MESSAGE.ERROR}>데이터를 불러오지 못했습니다. 다시 시도해주세요.</p>
   } else if (!data) {
-    content = <p className="text-center text-sm text-gray-500">해당 히스토리를 찾을 수 없습니다.</p>
+    content = <p className={STYLE.HISTORY_INFO.STATUS_MESSAGE.INFO}>해당 히스토리를 찾을 수 없습니다.</p>
   } else {
     content = (
       <>
