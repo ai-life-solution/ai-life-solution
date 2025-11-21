@@ -1,15 +1,15 @@
 'use client'
 
-import type { FoodIngredient, FoodNutrients } from '@/types/FoodData'
+import type { FoodNutrient } from '@/types/FoodItem'
 
 import { STYLE } from '../_constants/style'
 
-interface AmountSectionProps {
-  source: FoodNutrients[] | FoodIngredient[]
+interface NutritionSectionProps {
+  source: FoodNutrient[]
   title: string
 }
 
-export default function AmountSection({ source, title }: AmountSectionProps) {
+export default function NutritionSection({ source, title }: NutritionSectionProps) {
   return (
     <section className={STYLE.HISTORY_INFO.SECTION}>
       <h3 className={STYLE.HISTORY_INFO.SECTION_H3}>{title}</h3>

@@ -1,9 +1,9 @@
 import { TriangleAlert } from 'lucide-react'
 
-import type { ScanResultData } from '@/types/scanData'
+import type { FoodItem } from '@/types/FoodItem'
 
 interface Props {
-  data: ScanResultData
+  data: FoodItem
 }
 
 export default function AllergyInfo({ data }: Props) {

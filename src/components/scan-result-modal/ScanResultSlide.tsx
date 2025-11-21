@@ -2,14 +2,14 @@
 
 import { useState } from 'react'
 
-import type { ScanResultData } from '@/types/scanData'
+import type { FoodItem } from '@/types/FoodItem'
 
 import AllergyInfo from '../scan-result/AllergyInfo'
 import NutritionInfo from '../scan-result/NutritionInfo'
 import OtherInfo from '../scan-result/OtherInfo'
 
 interface Props {
-  data: ScanResultData
+  data: FoodItem
 }
 
 const slides = [NutritionInfo, AllergyInfo, OtherInfo]

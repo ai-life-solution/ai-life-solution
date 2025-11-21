@@ -1,9 +1,9 @@
 import Image from 'next/image'
 
-import type { ScanResultData } from '@/types/scanData'
+import type { FoodItem } from '@/types/FoodItem'
 
 interface Props {
-  data: ScanResultData
+  data: FoodItem
 }
 
 export default function OtherInfo({ data }: Props) {
