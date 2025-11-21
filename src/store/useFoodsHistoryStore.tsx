@@ -131,5 +131,10 @@ export const useFoodStore = create<FoodState>()(
 /**
  * FoodData용 IndexedDB를 초기화합니다.
  * 페이지 진입 시 애플리케이션 상단에서 한 번 호출되어야 합니다.
+ * 서버 환경(SSR)에서는 indexedDB 가 없어 오류가 발생하므로 브라우저에서만 호출합니다.
  */
-initFoodDB()
+if (typeof window !== 'undefined') {
+  initFoodDB().catch(error => {
+    console.error('Failed to initialize FoodData IndexedDB', error)
+  })
+}

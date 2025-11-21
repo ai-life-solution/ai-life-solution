@@ -1,9 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
+
+import { toast } from 'sonner'
 
 import { useFoodStore } from '@/store/useFoodsHistoryStore'
-import type { FoodHistoryEntry } from '@/types/FoodData'
 
 import { STYLE } from '../_constants/style'
 
@@ -17,29 +18,43 @@ interface HistoryInfoContainerProps {
 }
 
 export default function HistoryInfoContainer({ order }: HistoryInfoContainerProps) {
-  const promise = useFoodStore(state => state.getFoodItemByOrder(order))
-  const [data, setData] = useState<FoodHistoryEntry | undefined>(undefined)
+  const foods = useFoodStore(state => state.foods)
+  const loadFoods = useFoodStore(state => state.loadFoods)
+  const isLoading = useFoodStore(state => state.isLoading)
+  const isInitialized = useFoodStore(state => state.isInitialized)
+  const lastError = useFoodStore(state => state.lastError)
 
   useEffect(() => {
-    promise.then(setData)
-  }, [promise])
+    if (isInitialized) return
+    loadFoods().catch(error => {
+      toast.error(`Failed to load foods history from IndexedDB: ${error}`)
+    })
+  }, [isInitialized, loadFoods])
 
-  return (
-    <article className={STYLE.HISTORY_INFO.CONTAINER}>
-      {data ? (
-        <>
-          <h2 className={STYLE.HISTORY_INFO.H2}>{data.productName}</h2>
-          <p className={STYLE.HISTORY_INFO.PARAGRPAPH}>상품 코드: {data.barcode}</p>
-          <p className={STYLE.HISTORY_INFO.PARAGRPAPH}>주문 번호: {data.order}</p>
+  const data = foods.find(item => item.order === order)
 
-          <WeightSection data={data.weight} />
-          <AllergenSection allergens={data.allergens} />
-          <NutritionSection source={data.nutritions} title="영양 성분" />
-          <IngridientSection source={data.ingredients} title="원재료명 및 함량" />
-        </>
-      ) : (
-        <p className="text-center text-sm text-gray-500">데이터를 불러오지 못했습니다.</p>
-      )}
-    </article>
-  )
+  let content: React.ReactNode
+
+  if (!isInitialized || isLoading) {
+    content = <p className="text-center text-sm text-gray-500">데이터를 불러오는 중입니다...</p>
+  } else if (lastError) {
+    content = <p className="text-center text-sm text-red-500">데이터를 불러오지 못했습니다. 다시 시도해주세요.</p>
+  } else if (!data) {
+    content = <p className="text-center text-sm text-gray-500">해당 히스토리를 찾을 수 없습니다.</p>
+  } else {
+    content = (
+      <>
+        <h2 className={STYLE.HISTORY_INFO.H2}>{data.productName}</h2>
+        <p className={STYLE.HISTORY_INFO.PARAGRPAPH}>상품 코드: {data.barcode}</p>
+        <p className={STYLE.HISTORY_INFO.PARAGRPAPH}>주문 번호: {data.order}</p>
+
+        <WeightSection data={data.weight} />
+        <AllergenSection allergens={data.allergens} />
+        <NutritionSection source={data.nutritions} title="영양 성분" />
+        <IngridientSection source={data.ingredients} title="원재료명 및 함량" />
+      </>
+    )
+  }
+
+  return <article className={STYLE.HISTORY_INFO.CONTAINER}>{content}</article>
 }
