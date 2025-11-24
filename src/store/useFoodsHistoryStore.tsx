@@ -104,7 +104,8 @@ export const useFoodStore = create<FoodState>()(
           const allFoods = await getAllFoodsHistory()
           set({ foods: preprocessFoodsHistory(allFoods) })
         } catch (error) {
-          const message = error instanceof Error ? error.message : 'Unknown error while loading foods history'
+          const message =
+            error instanceof Error ? error.message : 'Unknown error while loading foods history'
           set({ lastError: message })
           toast.error(`Failed to load foods history: ${message}`)
           throw error

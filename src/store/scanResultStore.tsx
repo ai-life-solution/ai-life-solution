@@ -44,6 +44,12 @@ export const useScanResultStore = create<ScanResultStore>()(
             fetchCertificationInfo(barcode),
           ])
 
+          const productBody = productRes.response.body
+          if (productBody.totalCount === 0) {
+            set({ status: 'error', data: null })
+            return
+          }
+
           const newData = transformResData({
             productRes,
             ingredientRes,
@@ -56,8 +62,8 @@ export const useScanResultStore = create<ScanResultStore>()(
           // ui 상태 세팅
           set({ data: newData, status: 'success' })
         } catch (err) {
-          console.error(err)
-          set({ status: 'error' })
+          console.warn(err)
+          set({ status: 'error', data: null })
         }
       },
     }),

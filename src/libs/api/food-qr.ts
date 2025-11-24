@@ -8,7 +8,10 @@ async function requestProxy(path: string, barcode: string) {
 }
 
 // 기본 정보(푸드QR기본정보)
-export const fetchProduct = (barcode: string) => requestProxy('/qr1003/F003', barcode)
+export const fetchProduct = async (barcode: string) => {
+  const res = await requestProxy('/qr1003/F003', barcode)
+  return res
+}
 
 // 원재료 정보(푸드QR원재료정보)
 export const fetchIngredientInfo = (barcode: string) => requestProxy('/qr1007/F007', barcode)
