@@ -40,6 +40,17 @@ interface ChatCompletionPayload {
  * @param [payload.reasoning.enabled] - 이 요청에 대해 추론이 활성화되었는지 여부입니다.
  * @returns OpenRouter API의 JSON 응답으로 해결되는 Promise를 반환합니다.
  * @throws API 키가 누락되었거나 API 요청이 실패한 경우 오류를 발생시킵니다.
+ *
+ * @example
+ * ```typescript
+ * const response = await chatCompletion({
+ *   messages: [
+ *     { role: 'user', content: '안녕하세요!' }
+ *   ],
+ *   reasoning: { enabled: true }
+ * });
+ * console.log(response);
+ * ```
  */
 export async function chatCompletion(payload: ChatCompletionPayload) {
   const apiKey = process.env.OPENROUTER_API_KEY
