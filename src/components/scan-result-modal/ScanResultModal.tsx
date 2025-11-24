@@ -20,7 +20,6 @@ export default function ScanResultModal({ open, onClose }: ScanResultModalProps)
   const { data, status } = useScanResultStore()
 
   if (!open) return null
-  if (!data) return <div>there is no data</div>
 
   return (
     <dialog open className={DIALOG_CLASS}>
@@ -35,16 +34,21 @@ export default function ScanResultModal({ open, onClose }: ScanResultModalProps)
         </button>
         {/*상태 메시지 */}
         <LoadingStatus status={status} />
-        {/* 테그 */}
-        <Tags tags={data.tags} />
-        {/* 제품이름 */}
-        <div className="text-2xl font-bold">{data.productName}</div>
-        {/* 슬라이드 */}
-        <ScanResultSlide data={data} />
-        {/* 저장 버튼 */}
-        <SaveButton className="mb-20" />
-        {/* 네비게이션 바 */}
-        <NavigationBar />
+
+        {status === 'success' && data ? (
+          <>
+            {/* 테그 */}
+            <Tags tags={data.tags} />
+            {/* 제품이름 */}
+            <div className="text-2xl font-bold">{data.productName}</div>
+            {/* 슬라이드 */}
+            <ScanResultSlide data={data} />
+            {/* 저장 버튼 */}
+            <SaveButton className="mb-20" />
+            {/* 네비게이션 바 */}
+            <NavigationBar />
+          </>
+        ) : null}
       </div>
     </dialog>
   )
