@@ -22,3 +22,16 @@ export const SCAN_LINK_CLASS = cn(
   'rounded-3xl',
   'text-2xl'
 )
+
+export const BLACK_FILL_BUTTON_CLASS = cn(
+  'flex',
+  'gap-4',
+  'items-center',
+  'text-white',
+  'font-bold',
+  'bg-black',
+  'py-4',
+  'px-8',
+  'rounded-3xl',
+  'text-2xl'
+)
