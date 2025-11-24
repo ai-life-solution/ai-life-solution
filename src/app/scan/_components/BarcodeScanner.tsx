@@ -92,7 +92,7 @@ export default function BarcodeScanner() {
             // console.log('바코드 스캔 성공:', decodedText)
 
             setShowModal(true)
-            scan(decodedText)
+            scan(`0${decodedText}`)
           },
           () => {
             // 스캔 실패 시 무시하고 계속 시도
