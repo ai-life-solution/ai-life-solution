@@ -1,5 +1,6 @@
 'use client'
 
+import { toast } from 'sonner'
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 
@@ -21,6 +22,21 @@ interface FoodState {
    * 메모리에 적재된 음식 히스토리 목록입니다.
    */
   foods: FoodHistoryEntry[]
+
+  /**
+   * IndexedDB에서 음식을 로딩 중인지 여부입니다.
+   */
+  isLoading: boolean
+
+  /**
+   * 최소 한 번 이상 IndexedDB와 동기화를 시도했는지 여부입니다.
+   */
+  isInitialized: boolean
+
+  /**
+   * 마지막 로딩 시도에서 발생한 에러 메시지입니다.
+   */
+  lastError?: string
 
   /**
    * 음식 히스토리 항목을 IndexedDB 및 Zustand 스토어에 추가합니다.
@@ -65,6 +81,9 @@ export const useFoodStore = create<FoodState>()(
   persist(
     (set, get) => ({
       foods: [],
+      isLoading: false,
+      isInitialized: false,
+      lastError: undefined,
 
       async addFoodsHistoryItem(food) {
         await addFoodsHistory(food)
@@ -77,8 +96,21 @@ export const useFoodStore = create<FoodState>()(
       },
 
       async loadFoods() {
-        const allFoods = await getAllFoodsHistory()
-        set({ foods: preprocessFoodsHistory(allFoods) })
+        if (get().isLoading) return
+
+        set({ isLoading: true, lastError: undefined })
+
+        try {
+          const allFoods = await getAllFoodsHistory()
+          set({ foods: preprocessFoodsHistory(allFoods) })
+        } catch (error) {
+          const message = error instanceof Error ? error.message : 'Unknown error while loading foods history'
+          set({ lastError: message })
+          toast.error(`Failed to load foods history: ${message}`)
+          throw error
+        } finally {
+          set({ isLoading: false, isInitialized: true })
+        }
       },
 
       async getFoodItemByOrder(order) {
@@ -99,5 +131,10 @@ export const useFoodStore = create<FoodState>()(
 /**
  * FoodData용 IndexedDB를 초기화합니다.
  * 페이지 진입 시 애플리케이션 상단에서 한 번 호출되어야 합니다.
+ * 서버 환경(SSR)에서는 indexedDB 가 없어 오류가 발생하므로 브라우저에서만 호출합니다.
  */
-initFoodDB()
+if (typeof window !== 'undefined') {
+  initFoodDB().catch(error => {
+    console.error('Failed to initialize FoodData IndexedDB', error)
+  })
+}

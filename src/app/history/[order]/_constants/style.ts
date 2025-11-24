@@ -17,5 +17,10 @@ export const STYLE = {
     SECTION_TOP: cn('mb-6', 'mt-6'),
     SECTION: cn('mb-6'),
     SECTION_H3: cn('text-lg', 'font-semibold', 'mb-2'),
+    STATUS_MESSAGE: {
+      BASE: cn('text-center', 'text-sm'),
+      INFO: cn('text-center', 'text-sm', 'text-gray-500'),
+      ERROR: cn('text-center', 'text-sm', 'text-red-500'),
+    },
   },
 } as const

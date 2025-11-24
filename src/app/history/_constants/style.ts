@@ -37,4 +37,8 @@ export const STYLE = {
     LINK: cn('p-4', 'truncate', 'w-full'),
     POPOVER: cn('p-2'),
   },
+  STATUS_MESSAGE: {
+    INFO: cn('text-center', 'text-sm', 'text-gray-500'),
+    ERROR: cn('text-center', 'text-sm', 'text-red-500'),
+  },
 } as const
