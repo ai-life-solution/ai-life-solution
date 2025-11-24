@@ -231,7 +231,10 @@ export default function CreationTestPage() {
         ) : (
           <ul className="mt-4 divide-y divide-gray-200">
             {foods.map(item => (
-              <li key={item.order} className="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between">
+              <li
+                key={item.order}
+                className="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between"
+              >
                 <div>
                   <p className="font-semibold">{item.productName}</p>
                   <p className="text-sm text-gray-600">바코드: {item.barcode}</p>

@@ -14,6 +14,6 @@ export const metadata: Metadata = {
 }
 
 export default async function HistoryInnerPage({ params }: { params: Promise<{ order: string }> }) {
-  const order = await params.then((params) => Number(params.order))
+  const order = await params.then(params => Number(params.order))
   return <HistoryInfoContainer order={order} />
 }

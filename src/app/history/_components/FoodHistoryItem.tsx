@@ -8,9 +8,7 @@ import Popover, { type PopoverAction } from '@/components/Popover'
 import { useFoodStore } from '@/store/useFoodsHistoryStore'
 import type { FoodHistoryEntry } from '@/types/FoodData'
 
-
 import { STYLE } from '../_constants/style'
-
 
 interface FoodHistoryItemProps {
   item: FoodHistoryEntry
