@@ -1,12 +1,14 @@
+import { TAG_ITEM_CLASS } from './_constants/style'
+
 interface TagsProps {
   tags: string[]
 }
 
 export default function Tags({ tags }: TagsProps) {
   return (
-    <div className="flex gap-1.5">
+    <div className="flex gap-1.5 whitespace-nowrap">
       {tags.map(tag => (
-        <p key={tag} className="bg-gray-500 text-gray-200 text-sm px-3 py-0.5 rounded-lg">
+        <p key={tag} className={TAG_ITEM_CLASS}>
           {tag}
         </p>
       ))}

@@ -31,3 +31,20 @@ export const SAVE_BUTTON_CLASS = cn(
   'rounded-2xl',
   'w-full'
 )
+
+// 슬라이드
+export const INDICATOR_CLASS = (index: number, currentSlide: number) =>
+  cn(
+    index === currentSlide ? 'bg-[var(--color-accent)]' : 'bg-gray-300',
+    'h-5 flex justify-center items-center rounded-full aspect-square'
+  )
+
+export const SLIDE_INNER_CLASS = cn('flex w-full h-full transition-transform duration-300')
+
+export const INDICATOR_WRAPPER_CLASS = cn('absolute bottom-0 w-full flex justify-center gap-2')
+
+//로딩 상태
+export const ICON_WRAPPER_CLASS = cn('w-fit p-1 rounded-full aspect-square outline-1')
+
+// 태그
+export const TAG_ITEM_CLASS = cn('bg-gray-500 text-gray-200 text-sm px-3 py-0.5 rounded-lg')

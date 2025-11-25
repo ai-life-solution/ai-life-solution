@@ -8,6 +8,8 @@ import AllergyInfo from '../scan-result/AllergyInfo'
 import NutritionInfo from '../scan-result/NutritionInfo'
 import OtherInfo from '../scan-result/OtherInfo'
 
+import { INDICATOR_CLASS, INDICATOR_WRAPPER_CLASS, SLIDE_INNER_CLASS } from './_constants/style'
+
 interface Props {
   data: FoodItem
 }
@@ -23,9 +25,7 @@ export default function ScanResultSlide({ data }: Props) {
     <div className="relative h-full">
       {/* 슬라이드 영역 */}
       <div className="overflow-hidden flex w-full h-full">
-        <div
-          className={`flex transition-transform duration-300 ${translateClass[currentSlide]} w-full h-full`}
-        >
+        <div className={`${SLIDE_INNER_CLASS} ${translateClass[currentSlide]}`}>
           {slides.map((Slide, index) => (
             <div key={index} className="w-full shrink-0 ">
               <Slide data={data} />
@@ -34,10 +34,10 @@ export default function ScanResultSlide({ data }: Props) {
         </div>
       </div>
       {/* 인디케이터 영역 */}
-      <div className=" absolute bottom-0 flex gap-2 w-full justify-center">
+      <div className={INDICATOR_WRAPPER_CLASS}>
         {slides.map((_, index) => (
           <button
-            className={`${index === currentSlide ? 'bg-(--color-accent)' : 'bg-gray-300'} h-5 flex justify-center items-center rounded-full aspect-square`}
+            className={INDICATOR_CLASS(index, currentSlide)}
             key={index}
             onClick={() => setCurrentSlide(index)}
           />
