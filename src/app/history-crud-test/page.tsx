@@ -56,6 +56,7 @@ export default function CreationTestPage() {
   const foods = useFoodStore(state => state.foods)
   const addFoodsHistoryItem = useFoodStore(state => state.addFoodsHistoryItem)
   const removeFoodItem = useFoodStore(state => state.removeFoodItem)
+  const updateFoodItem = useFoodStore(state => state.updateFoodItem)
   const loadFoods = useFoodStore(state => state.loadFoods)
   const isLoading = useFoodStore(state => state.isLoading)
   const isInitialized = useFoodStore(state => state.isInitialized)
@@ -80,9 +81,22 @@ export default function CreationTestPage() {
       const maxOrder = foods.reduce((max, item) => Math.max(max, item.order ?? 0), 0)
       const nextOrder = maxOrder + 1
       const entry = buildFoodEntry(form, nextOrder)
+
+      // 먼저 항목 저장
       await addFoodsHistoryItem(entry)
       toast.success('새 히스토리 항목을 추가했습니다.')
       setForm(createInitialFormState())
+
+      // 비동기로 AI 요약 생성 후 업데이트
+      toast.info('AI 요약을 생성 중입니다...')
+      summarizeFoodItem(entry)
+        .then(description => {
+          updateFoodItem(nextOrder, { description })
+          toast.success(`order ${nextOrder} AI 요약 완료`)
+        })
+        .catch(err => {
+          toast.error(`AI 요약 생성 실패: ${err}`)
+        })
     } catch (error) {
       toast.error(`히스토리 항목 생성에 실패했습니다. ${error}`)
     } finally {
@@ -118,12 +132,11 @@ export default function CreationTestPage() {
     setForm(prev => ({ ...prev, [name]: value }))
   }
 
-  const handleSummarize = async (item: FoodHistoryEntry) => {
-    try {
-      const summary = await summarizeFoodItem(item)
-      toast(summary)
-    } catch (error) {
-      toast.error(`요약에 실패했습니다. ${error}`)
+  const handleSummarize = (item: FoodHistoryEntry) => {
+    if (item.description) {
+      toast(item.description, { duration: 10000 })
+    } else {
+      toast.warning('AI 요약이 없습니다.')
     }
   }
 
@@ -262,8 +275,9 @@ export default function CreationTestPage() {
                   </button>
                   <button
                     type="button"
-                    className="rounded border border-gray-300 px-3 py-1"
+                    className="rounded border border-gray-300 px-3 py-1 disabled:cursor-not-allowed disabled:opacity-50"
                     onClick={() => handleSummarize(item)}
+                    disabled={!item.description}
                   >
                     AI요약
                   </button>

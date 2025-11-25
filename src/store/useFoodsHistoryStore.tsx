@@ -70,6 +70,15 @@ interface FoodState {
    * @returns 조회된 FoodHistoryEntry 또는 존재하지 않을 경우 undefined를 담은 Promise
    */
   getFoodItemByOrder: (order: number) => Promise<FoodHistoryEntry | undefined>
+
+  /**
+   * 주어진 order 에 해당하는 음식 히스토리 항목을 업데이트합니다.
+   *
+   * @param order - 업데이트할 음식 히스토리의 order 값
+   * @param updates - 업데이트할 필드들
+   * @returns 비동기 작업을 나타내는 Promise
+   */
+  updateFoodItem: (order: number, updates: Partial<FoodHistoryEntry>) => Promise<void>
 }
 
 /**
@@ -116,6 +125,16 @@ export const useFoodStore = create<FoodState>()(
 
       async getFoodItemByOrder(order) {
         return getFoodHistoryByOrder(order)
+      },
+
+      async updateFoodItem(order, updates) {
+        const existing = await getFoodHistoryByOrder(order)
+        if (!existing) {
+          throw new Error(`order ${order}에 해당하는 항목을 찾을 수 없습니다.`)
+        }
+        const updated = { ...existing, ...updates }
+        await addFoodsHistory(updated)
+        set({ foods: get().foods.map(f => (f.order === order ? updated : f)) })
       },
     }),
     {
