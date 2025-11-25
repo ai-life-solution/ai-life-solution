@@ -2,6 +2,8 @@
 
 import { toast } from 'sonner'
 
+import type { FoodItem } from '@/types/FoodItem'
+
 /**
  * 채팅 메시지의 구조를 정의합니다.
  *
@@ -47,7 +49,7 @@ interface ChatCompletionPayload {
  *   messages: [
  *     { role: 'user', content: '안녕하세요!' }
  *   ],
- *   reasoning: { enabled: true }
+ *   reasoning: { enabled: true } // 없으면 추론모델 사용안해서 빨라짐
  * });
  * console.log(response);
  * ```
@@ -88,4 +90,43 @@ export async function chatCompletion(payload: ChatCompletionPayload) {
     toast.error(`서버 액션 오류:, ${error}`)
     throw error
   }
+}
+
+/**
+ * FoodItem 데이터를 AI를 통해 200자 이내로 요약합니다.
+ *
+ * @param foodItem - 요약할 식품 정보 객체
+ * @returns 200자 이내의 요약 문자열
+ *
+ * @example
+ * ```typescript
+ * const summary = await summarizeFoodItem(foodItem);
+ * console.log(summary); // "새우깡은 150g의 과자로, 밀가루와 새우를 주원료로..."
+ * ```
+ */
+export async function summarizeFoodItem(foodItem: FoodItem): Promise<string> {
+  const foodJson = JSON.stringify(foodItem, null, 2)
+
+  const result = await chatCompletion({
+    messages: [
+      {
+        role: 'system',
+        content: `당신은 식품 정보 요약 전문가입니다.
+          주어진 식품 데이터를 일반 소비자가 이해하기 쉽게 200자 이내로 요약해주세요.
+          제품명, 주요 영양정보, 알레르기 정보를 포함해주세요.
+          사람들이 이해하기 쉽게 뭐가 어떻게 왜 좋고 안좋은지 문어체로 설명해주세요`,
+      },
+      {
+        role: 'user',
+        content: `다음 식품 정보를 200자 이내로 요약해주세요:\n\n${foodJson}`,
+      },
+    ],
+  })
+
+  const content = result?.choices?.[0]?.message?.content
+  if (!content) {
+    throw new Error('AI 응답에서 요약 내용을 찾을 수 없습니다.')
+  }
+
+  return content
 }

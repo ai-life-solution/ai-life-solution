@@ -4,6 +4,7 @@ import { type FormEvent, useEffect, useState } from 'react'
 
 import { toast } from 'sonner'
 
+import { summarizeFoodItem } from '@/actions/chat'
 import { useFoodStore } from '@/store/useFoodsHistoryStore'
 import type { FoodHistoryEntry } from '@/types/FoodData'
 
@@ -33,11 +34,11 @@ const parseCommaSeparatedList = (value: string): string[] =>
     .map(item => item.trim())
     .filter(Boolean)
 
-const buildFoodEntry = (form: CreationFormState): FoodHistoryEntry => {
+const buildFoodEntry = (form: CreationFormState, nextOrder: number): FoodHistoryEntry => {
   const now = Date.now()
 
   return {
-    barcode: form.barcode.trim() || `${now}`,
+    barcode: form.barcode.trim() || `${nextOrder}`,
     productName: form.productName.trim() || '이름 없는 상품',
     weight: form.weight.trim() || '0g',
     category: form.category.trim() || undefined,
@@ -47,7 +48,7 @@ const buildFoodEntry = (form: CreationFormState): FoodHistoryEntry => {
     nutritions: [],
     certifications: [],
     timestamp: now,
-    order: now,
+    order: nextOrder,
   }
 }
 
@@ -76,7 +77,9 @@ export default function CreationTestPage() {
     setIsSubmitting(true)
 
     try {
-      const entry = buildFoodEntry(form)
+      const maxOrder = foods.reduce((max, item) => Math.max(max, item.order ?? 0), 0)
+      const nextOrder = maxOrder + 1
+      const entry = buildFoodEntry(form, nextOrder)
       await addFoodsHistoryItem(entry)
       toast.success('새 히스토리 항목을 추가했습니다.')
       setForm(createInitialFormState())
@@ -113,6 +116,15 @@ export default function CreationTestPage() {
   const onInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = event.target
     setForm(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleSummarize = async (item: FoodHistoryEntry) => {
+    try {
+      const summary = await summarizeFoodItem(item)
+      toast(summary)
+    } catch (error) {
+      toast.error(`요약에 실패했습니다. ${error}`)
+    }
   }
 
   return (
@@ -247,6 +259,13 @@ export default function CreationTestPage() {
                     onClick={() => navigator.clipboard.writeText(JSON.stringify(item, null, 2))}
                   >
                     JSON 복사
+                  </button>
+                  <button
+                    type="button"
+                    className="rounded border border-gray-300 px-3 py-1"
+                    onClick={() => handleSummarize(item)}
+                  >
+                    AI요약
                   </button>
                   <button
                     type="button"
