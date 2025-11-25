@@ -26,7 +26,11 @@ function transfromStandardInfo(productInfoRes: FoodQrResponse<RawStandardInfo>) 
 }
 
 function transformIngredients(ingredientRes: FoodQrResponse<Ingredient>): string[] {
-  const prvwCn = (ingredientRes.response.body.items.item as Ingredient)?.prvwCn ?? ''
+  const items = ingredientRes.response.body.items.item
+
+  // 배열이면 첫 번째 요소 선택
+  const item = Array.isArray(items) ? items[0] : items
+  const prvwCn = item?.prvwCn
   const ingredients = parseHtml(prvwCn)
   return ingredients
 }
@@ -48,7 +52,9 @@ function transformAllergens(allergyRes: FoodQrResponse<Allergen>): string[] {
   const itmes = Array.isArray(allergyRes.response.body.items.item)
     ? (allergyRes.response.body.items.item as Allergen[])
     : [allergyRes.response.body.items.item]
-  const allergens = itmes.map(i => i.algCsgMtrNm)
+
+  const AllAllergens = itmes.map(i => i.algCsgMtrNm)
+  const allergens = [...new Set(AllAllergens)]
   return allergens
 }
 
@@ -56,8 +62,14 @@ function transformCertifications(certRes: FoodQrResponse<Certification>): Certif
   const items = Array.isArray(certRes.response.body.items.item)
     ? (certRes.response.body.items.item as Certification[])
     : [certRes.response.body.items.item as Certification]
-  const certifications = items.filter(c => c.certYn === 'Y')
-  return certifications
+
+  const AllCertifications = items.filter(c => c.certYn === 'Y')
+  const certifications = new Map<string, Certification>()
+
+  AllCertifications.forEach(cert => {
+    certifications.set(cert.certNm, cert)
+  })
+  return [...certifications.values()]
 }
 
 function transformTags(
