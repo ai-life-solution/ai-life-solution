@@ -1,5 +1,7 @@
 import { Check, Ellipsis, X } from 'lucide-react'
 
+import { ICON_WRAPPER_CLASS } from './_constants/style'
+
 export type Status = 'loading' | 'success' | 'error'
 
 interface LoadingStatusProps {
@@ -40,9 +42,7 @@ export default function LoadingStatus({ status }: LoadingStatusProps) {
 
   return (
     <div className="flex gap-2 items-center">
-      <span className={`${bg} w-fit p-1 rounded-full aspect-square outline-1 ${outlineColor}`}>
-        {icon}
-      </span>
+      <span className={`${bg} ${ICON_WRAPPER_CLASS} ${outlineColor}`}>{icon}</span>
       <p className={`${textColor} text-base font-medium`}>{text}</p>
     </div>
   )
