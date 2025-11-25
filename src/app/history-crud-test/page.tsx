@@ -4,6 +4,7 @@ import { type FormEvent, useEffect, useState } from 'react'
 
 import { toast } from 'sonner'
 
+import { summarizeFoodItem } from '@/actions/chat'
 import { useFoodStore } from '@/store/useFoodsHistoryStore'
 import type { FoodHistoryEntry } from '@/types/FoodData'
 
@@ -33,11 +34,11 @@ const parseCommaSeparatedList = (value: string): string[] =>
     .map(item => item.trim())
     .filter(Boolean)
 
-const buildFoodEntry = (form: CreationFormState): FoodHistoryEntry => {
+const buildFoodEntry = (form: CreationFormState, nextOrder: number): FoodHistoryEntry => {
   const now = Date.now()
 
   return {
-    barcode: form.barcode.trim() || `${now}`,
+    barcode: form.barcode.trim() || `${nextOrder}`,
     productName: form.productName.trim() || '이름 없는 상품',
     weight: form.weight.trim() || '0g',
     category: form.category.trim() || undefined,
@@ -47,7 +48,7 @@ const buildFoodEntry = (form: CreationFormState): FoodHistoryEntry => {
     nutritions: [],
     certifications: [],
     timestamp: now,
-    order: now,
+    order: nextOrder,
   }
 }
 
@@ -55,6 +56,7 @@ export default function CreationTestPage() {
   const foods = useFoodStore(state => state.foods)
   const addFoodsHistoryItem = useFoodStore(state => state.addFoodsHistoryItem)
   const removeFoodItem = useFoodStore(state => state.removeFoodItem)
+  const updateFoodItem = useFoodStore(state => state.updateFoodItem)
   const loadFoods = useFoodStore(state => state.loadFoods)
   const isLoading = useFoodStore(state => state.isLoading)
   const isInitialized = useFoodStore(state => state.isInitialized)
@@ -76,10 +78,25 @@ export default function CreationTestPage() {
     setIsSubmitting(true)
 
     try {
-      const entry = buildFoodEntry(form)
+      const maxOrder = foods.reduce((max, item) => Math.max(max, item.order ?? 0), 0)
+      const nextOrder = maxOrder + 1
+      const entry = buildFoodEntry(form, nextOrder)
+
+      // 먼저 항목 저장
       await addFoodsHistoryItem(entry)
       toast.success('새 히스토리 항목을 추가했습니다.')
       setForm(createInitialFormState())
+
+      // 비동기로 AI 요약 생성 후 업데이트
+      toast.info('AI 요약을 생성 중입니다...')
+      summarizeFoodItem(entry)
+        .then(description => {
+          updateFoodItem(nextOrder, { description })
+          toast.success(`order ${nextOrder} AI 요약 완료`)
+        })
+        .catch(err => {
+          toast.error(`AI 요약 생성 실패: ${err}`)
+        })
     } catch (error) {
       toast.error(`히스토리 항목 생성에 실패했습니다. ${error}`)
     } finally {
@@ -113,6 +130,14 @@ export default function CreationTestPage() {
   const onInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = event.target
     setForm(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleSummarize = (item: FoodHistoryEntry) => {
+    if (item.description) {
+      toast(item.description, { duration: 10000 })
+    } else {
+      toast.warning('AI 요약이 없습니다.')
+    }
   }
 
   return (
@@ -247,6 +272,14 @@ export default function CreationTestPage() {
                     onClick={() => navigator.clipboard.writeText(JSON.stringify(item, null, 2))}
                   >
                     JSON 복사
+                  </button>
+                  <button
+                    type="button"
+                    className="rounded border border-gray-300 px-3 py-1 disabled:cursor-not-allowed disabled:opacity-50"
+                    onClick={() => handleSummarize(item)}
+                    disabled={!item.description}
+                  >
+                    AI요약
                   </button>
                   <button
                     type="button"

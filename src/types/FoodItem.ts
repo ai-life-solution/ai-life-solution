@@ -120,5 +120,9 @@ export interface FoodItem {
    */
   timestamp: number
 
+  /** 스캔 순서를 나타내는 고유 식별자 (히스토리 저장소의 Key 역할) */
   order?: number
+
+  /** AI 요약 결과 */
+  description?: string
 }
