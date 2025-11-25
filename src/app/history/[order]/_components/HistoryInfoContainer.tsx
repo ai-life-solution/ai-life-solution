@@ -2,13 +2,18 @@
 
 import { useEffect } from 'react'
 
+import { Volume1 } from 'lucide-react'
 import { toast } from 'sonner'
 
+import { useTTS } from '@/hooks/useTTS'
 import { useFoodStore } from '@/store/useFoodsHistoryStore'
+import type { FoodItem } from '@/types/FoodItem'
+import { parseFoodToRead } from '@/utils'
 
 import { STYLE } from '../_constants/style'
 
 import AllergenSection from './AllergenSection'
+import DescriptionSection from './DescriptionSection'
 import IngridientSection from './IngridientSection'
 import NutritionSection from './NutritionSection'
 import WeightSection from './WeightSection'
@@ -18,11 +23,31 @@ interface HistoryInfoContainerProps {
 }
 
 export default function HistoryInfoContainer({ order }: HistoryInfoContainerProps) {
+  const { speak, isSpeaking, stopSpeak } = useTTS()
   const foods = useFoodStore(state => state.foods)
   const loadFoods = useFoodStore(state => state.loadFoods)
   const isLoading = useFoodStore(state => state.isLoading)
   const isInitialized = useFoodStore(state => state.isInitialized)
   const lastError = useFoodStore(state => state.lastError)
+
+
+  const speakFoodItem = (data: FoodItem) => {
+    if (!data) {
+      speak("데이터가 없습니다.")
+      return
+    }
+
+    try {
+      if (!isSpeaking) {
+        speak(parseFoodToRead(data))
+      } else {
+        stopSpeak()
+      }
+    } catch (error) {
+      console.error('TTS speech failed:', error)
+      toast.error('음성 출력에 실패했습니다.')
+    }
+  }
 
   useEffect(() => {
     if (isInitialized) return
@@ -52,14 +77,24 @@ export default function HistoryInfoContainer({ order }: HistoryInfoContainerProp
   } else {
     content = (
       <>
-        <h2 className={STYLE.HISTORY_INFO.H2}>{data.productName}</h2>
+        <div className="flex justify-between">
+          <h2 className={STYLE.HISTORY_INFO.H2}>{data.productName}</h2>
+          <button
+            type="button"
+            aria-label="음성듣기"
+            onClick={() => speakFoodItem(data)}
+            className={`transition-all ${isSpeaking ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-80'}`}
+          >
+            <Volume1 />
+          </button>
+        </div>
         <p className={STYLE.HISTORY_INFO.PARAGRPAPH}>상품 코드: {data.barcode}</p>
-        <p className={STYLE.HISTORY_INFO.PARAGRPAPH}>주문 번호: {data.order}</p>
 
-        <WeightSection data={data.weight} />
+        <WeightSection data={data.weight ?? ''} />
         <AllergenSection allergens={data.allergens} />
         <NutritionSection source={data.nutritions} title="영양 성분" />
         <IngridientSection source={data.ingredients} title="원재료명 및 함량" />
+        <DescriptionSection source={data.description ?? ''} title="AI 요약" />
       </>
     )
   }

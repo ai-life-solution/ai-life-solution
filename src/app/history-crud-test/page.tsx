@@ -7,6 +7,7 @@ import { toast } from 'sonner'
 import { summarizeFoodItem } from '@/actions/chat'
 import { useFoodStore } from '@/store/useFoodsHistoryStore'
 import type { FoodHistoryEntry } from '@/types/FoodData'
+import type { FoodNutrient } from '@/types/FoodItem'
 
 interface CreationFormState {
   productName: string
@@ -16,6 +17,7 @@ interface CreationFormState {
   tags: string
   ingredients: string
   allergens: string
+  nutritions: string
 }
 
 const createInitialFormState = (): CreationFormState => ({
@@ -26,6 +28,7 @@ const createInitialFormState = (): CreationFormState => ({
   tags: '테스트, 샘플',
   ingredients: '밀, 대두',
   allergens: '밀, 대두',
+  nutritions: '탄수화물, 50, g, 17|단백질, 5, g, 9|지방, 10, g, 15|나트륨, 500, mg, 25',
 })
 
 const parseCommaSeparatedList = (value: string): string[] =>
@@ -33,6 +36,20 @@ const parseCommaSeparatedList = (value: string): string[] =>
     .split(',')
     .map(item => item.trim())
     .filter(Boolean)
+
+const parseNutritions = (value: string): FoodNutrient[] => {
+  if (!value.trim()) return []
+
+  return value.split('|').map(item => {
+    const parts = item.split(',').map(part => part.trim())
+    return {
+      name: parts[0] || '',
+      amount: parseFloat(parts[1]) || 0,
+      unit: parts[2] || '',
+      dailyRatio: parseFloat(parts[3]) || undefined,
+    }
+  }).filter(nutrition => nutrition.name && nutrition.amount > 0)
+}
 
 const buildFoodEntry = (form: CreationFormState, nextOrder: number): FoodHistoryEntry => {
   const now = Date.now()
@@ -45,7 +62,7 @@ const buildFoodEntry = (form: CreationFormState, nextOrder: number): FoodHistory
     tags: parseCommaSeparatedList(form.tags),
     ingredients: parseCommaSeparatedList(form.ingredients),
     allergens: parseCommaSeparatedList(form.allergens),
-    nutritions: [],
+    nutritions: parseNutritions(form.nutritions),
     certifications: [],
     timestamp: now,
     order: nextOrder,
@@ -236,6 +253,18 @@ export default function CreationTestPage() {
               rows={2}
               value={form.allergens}
               onChange={onInputChange}
+            />
+          </label>
+
+          <label className="flex flex-col text-sm font-medium">
+            영양성분 (|로 구분, 형식: 이름, 함량, 단위, 일일비율%)
+            <textarea
+              className="mt-1 rounded border border-gray-300 p-2"
+              name="nutritions"
+              rows={3}
+              value={form.nutritions}
+              onChange={onInputChange}
+              placeholder="예: 탄수화물, 50, g, 17|단백질, 5, g, 9|지방, 10, g, 15|나트륨, 500, mg, 25"
             />
           </label>
 
