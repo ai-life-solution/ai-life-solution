@@ -131,7 +131,7 @@ export default function Popover({
   const handleActionClick = (action: PopoverAction) => {
     if (action.disabled) return
     if (action.isDanger) {
-      const message = action.dangerLabel ?? "진행하시겠습니까?"
+      const message = action.dangerLabel ?? '진행하시겠습니까?'
       if (!confirm(message)) return
     }
     action.onClick()
