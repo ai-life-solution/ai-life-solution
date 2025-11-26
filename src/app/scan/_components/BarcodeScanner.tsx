@@ -12,47 +12,175 @@ import { useScanResultStore } from '@/store/scanResultStore'
 
 import { SCANNER_CONTAINER_CLASS } from '../_constants/style'
 
+// BarcodeDetector 타입 선언
+interface BarcodeDetector {
+  detect(image: HTMLVideoElement | HTMLImageElement): Promise<DetectedBarcode[]>
+}
+
+interface DetectedBarcode {
+  boundingBox: {
+    x: number
+    y: number
+    width: number
+    height: number
+  }
+  rawValue: string
+  format: string
+}
+
+type BarcodeDetectorConstructor = new (options?: { formats?: string[] }) => BarcodeDetector
+
+declare global {
+  interface Window {
+    BarcodeDetector?: BarcodeDetectorConstructor
+  }
+}
+
+// 위치 판단 임계값
+const POSITION_THRESHOLD = 80
+
+// 음성 안내
+const VOICE_COOLDOWN = 2000
+
+type Position = 'left' | 'right' | 'up' | 'down' | 'center'
+
 export default function BarcodeScanner() {
   const router = useRouter()
   const scannerRef = useRef<Html5Qrcode | null>(null)
   const scanStartTimeRef = useRef<number>(0)
   const guideIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const positionTrackingRef = useRef<NodeJS.Timeout | null>(null)
+  const lastVoiceTimeRef = useRef<number>(0)
   const isTTSEnabledRef = useRef(true)
+  const barcodeDetectorRef = useRef<BarcodeDetector | null>(null)
+
   const [facingMode, setFacingMode] = useState<'environment' | 'user'>('environment')
   const [showModal, setShowModal] = useState(false)
   const [scannerKey, setScannerKey] = useState(0)
   const [ttsIcon, setTtsIcon] = useState(true)
+  const [isBarcodeDetectorSupported, setIsBarcodeDetectorSupported] = useState(false)
 
   const { scan } = useScanResultStore()
 
-  const speak = (text: string) => {
+  const speak = useCallback((text: string) => {
     if (!isTTSEnabledRef.current) return
 
     const utterance = new SpeechSynthesisUtterance(text)
     utterance.lang = 'ko-KR'
     utterance.rate = 1.0
     window.speechSynthesis.speak(utterance)
-  }
+  }, [])
 
-  const stopSpeak = () => {
+  const stopSpeak = useCallback(() => {
     window.speechSynthesis.cancel()
-  }
+  }, [])
 
-  const vibrate = (pattern: number | number[]) => {
+  const vibrate = useCallback((pattern: number | number[]) => {
     if (navigator.vibrate) {
       navigator.vibrate(pattern)
     }
-  }
+  }, [])
 
-  const clearGuideInterval = () => {
+  const clearGuideInterval = useCallback(() => {
     if (guideIntervalRef.current) {
       clearInterval(guideIntervalRef.current)
       guideIntervalRef.current = null
     }
+  }, [])
+
+  const clearPositionTracking = useCallback(() => {
+    if (positionTrackingRef.current) {
+      clearInterval(positionTrackingRef.current)
+      positionTrackingRef.current = null
+    }
+  }, [])
+
+  const getPositionMessage = (position: Position): string => {
+    const messages: Record<Position, string> = {
+      left: '휴대폰을 왼쪽으로 이동하세요',
+      right: '휴대폰을 오른쪽으로 이동하세요',
+      up: '휴대폰을 위로 이동하세요',
+      down: '휴대폰을 아래로 이동하세요',
+      center: '바코드가 중앙입니다',
+    }
+    return messages[position]
   }
+
+  const speakPosition = useCallback(
+    (position: Position) => {
+      const now = Date.now()
+      if (now - lastVoiceTimeRef.current < VOICE_COOLDOWN) {
+        return
+      }
+
+      stopSpeak()
+      lastVoiceTimeRef.current = now
+      speak(getPositionMessage(position))
+      vibrate(100)
+    },
+    [speak, vibrate, stopSpeak]
+  )
+
+  const startPositionTracking = useCallback(() => {
+    if (!isBarcodeDetectorSupported || !barcodeDetectorRef.current) {
+      return
+    }
+
+    const tryStartTracking = () => {
+      const video = document.querySelector('#barcode-reader video') as HTMLVideoElement | null
+
+      if (!video || video.readyState !== 4) {
+        setTimeout(tryStartTracking, 300)
+        return
+      }
+
+      positionTrackingRef.current = setInterval(() => {
+        void (async () => {
+          if (!barcodeDetectorRef.current || !video) return
+
+          try {
+            const barcodes = await barcodeDetectorRef.current.detect(video)
+
+            if (barcodes.length === 0) return
+
+            const barcode = barcodes[0]
+            const { boundingBox } = barcode
+
+            const barcodeCenterX = boundingBox.x + boundingBox.width / 2
+            const barcodeCenterY = boundingBox.y + boundingBox.height / 2
+
+            const screenCenterX = video.videoWidth / 2
+            const screenCenterY = video.videoHeight / 2
+
+            const dx = barcodeCenterX - screenCenterX
+            const dy = barcodeCenterY - screenCenterY
+
+            let position: Position
+
+            if (Math.abs(dx) < POSITION_THRESHOLD && Math.abs(dy) < POSITION_THRESHOLD) {
+              position = 'center'
+            } else if (Math.abs(dx) > Math.abs(dy)) {
+              // 바코드가 오른쪽에 있으면 휴대폰을 오른쪽으로 이동
+              position = dx > 0 ? 'right' : 'left'
+            } else {
+              // 바코드가 아래에 있으면 휴대폰을 아래로 이동
+              position = dy > 0 ? 'down' : 'up'
+            }
+
+            speakPosition(position)
+          } catch (_error) {
+            // BarcodeDetector 에러 무시
+          }
+        })()
+      }, 500)
+    }
+
+    setTimeout(tryStartTracking, 1000)
+  }, [isBarcodeDetectorSupported, speakPosition])
 
   const cleanupScanner = useCallback(async () => {
     clearGuideInterval()
+    clearPositionTracking()
     stopSpeak()
 
     if (scannerRef.current) {
@@ -61,10 +189,35 @@ export default function BarcodeScanner() {
         if (state === 2) {
           await scannerRef.current.stop()
         }
-      } catch (err) {
-        console.error('스캐너 정리 실패:', err)
+      } catch (_err) {
+        // 스캐너 정리 실패 무시
       }
     }
+  }, [clearGuideInterval, clearPositionTracking, stopSpeak])
+
+  useEffect(() => {
+    const checkBarcodeDetector = () => {
+      if ('BarcodeDetector' in window && window.BarcodeDetector) {
+        setIsBarcodeDetectorSupported(true)
+        barcodeDetectorRef.current = new window.BarcodeDetector({
+          formats: [
+            'ean_13',
+            'ean_8',
+            'upc_a',
+            'upc_e',
+            'code_128',
+            'code_39',
+            'code_93',
+            'codabar',
+            'itf',
+          ],
+        })
+      } else {
+        setIsBarcodeDetectorSupported(false)
+      }
+    }
+
+    checkBarcodeDetector()
   }, [])
 
   useEffect(() => {
@@ -84,13 +237,12 @@ export default function BarcodeScanner() {
           },
           decodedText => {
             clearGuideInterval()
+            clearPositionTracking()
             stopSpeak()
             speak('바코드를 찾았습니다!')
             vibrate([200, 100, 200])
-            scanner.stop().catch(console.error)
-
+            void scanner.stop()
             // console.log('바코드 스캔 성공:', decodedText)
-
             setShowModal(true)
             scan(`0${decodedText}`)
           },
@@ -98,6 +250,10 @@ export default function BarcodeScanner() {
             // 스캔 실패 시 무시하고 계속 시도
           }
         )
+
+        if (isBarcodeDetectorSupported) {
+          startPositionTracking()
+        }
 
         guideIntervalRef.current = setInterval(() => {
           const elapsed = (Date.now() - scanStartTimeRef.current) / 1000
@@ -111,18 +267,29 @@ export default function BarcodeScanner() {
             speak('바코드를 천천히 움직여주세요')
           }
         }, 3000)
-      } catch (err) {
-        console.error('카메라 시작 실패:', err)
+      } catch (_err) {
         speak('카메라를 시작할 수 없습니다')
       }
     }
 
-    startScanner()
+    void startScanner()
 
     return () => {
-      cleanupScanner()
+      void cleanupScanner()
     }
-  }, [facingMode, scan, cleanupScanner, scannerKey])
+  }, [
+    facingMode,
+    scan,
+    speak,
+    vibrate,
+    clearGuideInterval,
+    clearPositionTracking,
+    stopSpeak,
+    cleanupScanner,
+    isBarcodeDetectorSupported,
+    startPositionTracking,
+    scannerKey,
+  ])
 
   const handleRotateCamera = async () => {
     if (scannerRef.current) {
@@ -133,8 +300,8 @@ export default function BarcodeScanner() {
         }
         setFacingMode(prev => (prev === 'environment' ? 'user' : 'environment'))
         speak('카메라를 전환합니다')
-      } catch (err) {
-        console.error('카메라 전환 실패:', err)
+      } catch (_err) {
+        // 카메라 전환 실패
       }
     }
   }
