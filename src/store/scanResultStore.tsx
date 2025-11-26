@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 
+import { summarizeFoodItem } from '@/actions/chat'
 import {
   fetchAllergyInfo,
   fetchCertificationInfo,
@@ -50,7 +51,7 @@ export const useScanResultStore = create<ScanResultStore>()(
             return
           }
 
-          const newData = transformResData({
+          let newData = transformResData({
             productRes,
             ingredientRes,
             allergyRes,
@@ -58,6 +59,13 @@ export const useScanResultStore = create<ScanResultStore>()(
             certRes,
             barcode,
           })
+
+          try {
+            const description = await summarizeFoodItem(newData)
+            newData = { ...newData, description }
+          } catch (err) {
+            console.error(`요약실패:${err}`)
+          }
 
           // ui 상태 세팅
           set({ data: newData, status: 'success' })

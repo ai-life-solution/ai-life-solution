@@ -39,13 +39,19 @@ function transformNutritions(nutritionRes: FoodQrResponse<RawNutrition>): FoodNu
   const items = Array.isArray(nutritionRes.response.body.items.item)
     ? (nutritionRes.response.body.items.item as RawNutrition[])
     : [nutritionRes.response.body.items.item]
-  const nutritions = items.map(i => ({
+  const AllNutritions = items.map(i => ({
     name: i.nirwmtNm,
     amount: i.cta,
     unit: i.igrdUcd,
     dailyRatio: i.ntrtnRt,
   }))
-  return nutritions
+  const nutritions = new Map<string, FoodNutrient>()
+
+  AllNutritions.forEach(n => {
+    nutritions.set(n.name, n)
+  })
+
+  return [...nutritions.values()]
 }
 
 function transformAllergens(allergyRes: FoodQrResponse<Allergen>): string[] {
