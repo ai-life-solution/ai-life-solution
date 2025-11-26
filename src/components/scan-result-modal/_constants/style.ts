@@ -33,13 +33,13 @@ export const SAVE_BUTTON_CLASS = cn(
 )
 
 // 슬라이드
+export const SLIDE_INNER_CLASS = cn('flex w-full h-full transition-transform duration-300')
+
 export const INDICATOR_CLASS = (index: number, currentSlide: number) =>
   cn(
     index === currentSlide ? 'bg-[var(--color-accent)]' : 'bg-gray-300',
     'h-5 flex justify-center items-center rounded-full aspect-square'
   )
-
-export const SLIDE_INNER_CLASS = cn('flex w-full h-full transition-transform duration-300')
 
 export const INDICATOR_WRAPPER_CLASS = cn('absolute bottom-0 w-full flex justify-center gap-2')
 
