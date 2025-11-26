@@ -180,7 +180,7 @@ bun install
 ```bash
 # 4. .env.local 파일에 환경 변수 설정
 # 푸드 QR API
-FOOD_QR_URL=https://www.foodsafetykorea.go.kr/portal/foodsafe/foodsafety
+FOOD_QR_URL=https://foodqr.kr/openapi/service
 FOOD_QR_API_KEY=your_api_key_here
 
 # OpenRouter API (AI 요약 기능)
