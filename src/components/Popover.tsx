@@ -30,6 +30,8 @@ export interface PopoverAction {
    * 비활성화 여부
    */
   disabled?: boolean
+
+  dangerLabel?: string
 }
 
 /**
@@ -128,6 +130,10 @@ export default function Popover({
    */
   const handleActionClick = (action: PopoverAction) => {
     if (action.disabled) return
+    if (action.isDanger) {
+      const message = action.dangerLabel ?? "진행하시겠습니까?"
+      if (!confirm(message)) return
+    }
     action.onClick()
     setIsOpen(false)
   }
