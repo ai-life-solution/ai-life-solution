@@ -1,6 +1,4 @@
-# HearCode
-
-![HearCode](./public/svg/logo.svg)
+# ![HearCode](./public/svg/logo.svg)
 
 > 시각 장애인을 위한 AI 기반 음성 안내 바코드 스캐너
 > HearCode는 한국산업기술평가관리원(KEIT)이 주최한 **『AI 라이프 솔루션 챌린지』** 공모전을 위해 개발된 웹 애플리케이션입니다. 선정된 AI 라이프 아이디어인 "들리는 바코드"를 실제 구현하여, 시각 장애인이 일상생활에서 제품 정보를 쉽게 확인할 수 있도록 돕습니다.
@@ -93,7 +91,7 @@
 | 상태 관리 도구   | ![Zustand](https://img.shields.io/badge/Zustand-5B4638?style=for-the-badge&logo=Zustand&logoColor=white) ![TanStack Query](https://img.shields.io/badge/TanStack%20Query-FF4154?style=for-the-badge&logo=reactquery&logoColor=white) |
 | 바코드 스캔     | ![HTML5-QRCode](https://img.shields.io/badge/HTML5--QRCode-000000?style=for-the-badge&logo=html5&logoColor=white) |
 | 데이터 저장     | ![IndexedDB](https://img.shields.io/badge/IndexedDB-4285F4?style=for-the-badge&logo=javascript&logoColor=white) |
-| AI 연동         | ![OpenRouter](https://img.shields.io/badge/OpenRouter-000000?style=for-the-badge&logo=openrouter&logoColor=white) |
+| AI            | ![OpenRouter](https://img.shields.io/badge/OpenRouter-000000?style=for-the-badge&logo=openrouter&logoColor=white) ![Grok 4.1 Fast](https://img.shields.io/badge/Grok%204.1%20Fast-FF6B35?style=for-the-badge&logo=xai&logoColor=white) |
 | 패키지 매니저    | ![Bun](https://img.shields.io/badge/bun-000000?style=for-the-badge&logo=bun&logoColor=white) |
 | 배포             | ![Vercel](https://img.shields.io/badge/vercel-000000?style=for-the-badge&logo=vercel&logoColor=white) |
 | 버전 관리 & 협업 | ![Git](https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white) ![GitHub](https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white) ![Discord](https://img.shields.io/badge/discord-5865F2?style=for-the-badge&logo=discord&logoColor=white) ![Notion](https://img.shields.io/badge/notion-ffffff?style=for-the-badge&logo=notion&logoColor=black) |
@@ -215,7 +213,6 @@ bun dev
 
 - **푸드 QR API 응답 없음**: 바코드 번호가 정확한지 확인하고, 인터넷 연결 상태를 점검하세요
 - **AI 요약 기능 오류**: OPENROUTER_API_KEY가 올바르게 설정되었는지 확인하세요
-- **CORS 에러**: API 호출은 항상 프록시를 통해 이루어져야 합니다
 
 #### 데이터 저장 관련
 
