@@ -7,7 +7,7 @@ interface ParseFoodToReadParams {
   nutritions?: FoodNutrient[]
   ingredients?: string[]
   description?: string
-  certifications: Certification[]
+  certifications?: Certification[]
 }
 
 export default function parseFoodToRead(food: ParseFoodToReadParams): string {
