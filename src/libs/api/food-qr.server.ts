@@ -11,7 +11,7 @@ interface RequestParams {
 export async function requestFoodQrApi({
   servicePath,
   barcode,
-  numOfRows = 10,
+  numOfRows = 20,
   pageNo = 1,
 }: RequestParams) {
   const encodedKey = encodeURIComponent(API_KEY)

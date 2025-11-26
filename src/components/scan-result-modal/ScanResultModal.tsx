@@ -1,9 +1,11 @@
 'use client'
 
 import { X } from 'lucide-react'
+import { toast } from 'sonner'
 
 import NavigationBar from '@/components/NavigationBar'
 import { useScanResultStore } from '@/store/scanResultStore'
+import { useFoodStore } from '@/store/useFoodsHistoryStore'
 
 import { DIALOG_CLASS, MODAL_INNER_CLASS } from './_constants/style'
 import LoadingStatus from './LoadingStatus'
@@ -18,8 +20,27 @@ interface ScanResultModalProps {
 
 export default function ScanResultModal({ open, onClose }: ScanResultModalProps) {
   const { data, status } = useScanResultStore()
-
+  const { foods, addFoodsHistoryItem } = useFoodStore()
   if (!open) return null
+
+  const handleSave = async () => {
+    if (!data) return
+    const lastOrder = foods[0]?.order ?? 0
+
+    const newEntry = {
+      ...data,
+      order: lastOrder + 1,
+      createAt: Date.now(),
+    }
+
+    try {
+      await addFoodsHistoryItem(newEntry)
+      toast.success('저장 완료!')
+    } catch (e) {
+      toast.error('fail')
+      console.error(e)
+    }
+  }
 
   return (
     <dialog open className={DIALOG_CLASS}>
@@ -44,7 +65,7 @@ export default function ScanResultModal({ open, onClose }: ScanResultModalProps)
             {/* 슬라이드 */}
             <ScanResultSlide data={data} />
             {/* 저장 버튼 */}
-            <SaveButton className="mb-20" />
+            <SaveButton className="mb-20" onClick={handleSave} />
             {/* 네비게이션 바 */}
             <NavigationBar />
           </>

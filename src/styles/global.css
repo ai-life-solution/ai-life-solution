@@ -5,3 +5,21 @@
 button {
   @apply cursor-pointer;
 }
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; /* 배경은 정리감 있게 투명 */
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-gray-300); /* 연한 그레이 */
+  border-radius: 9999px; /* 둥글둥글 pill 형태 */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gray-500);
+}
