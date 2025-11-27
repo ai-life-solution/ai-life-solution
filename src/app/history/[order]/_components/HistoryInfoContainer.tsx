@@ -5,7 +5,7 @@ import { useEffect } from 'react'
 import { Volume1 } from 'lucide-react'
 import { toast } from 'sonner'
 
-import { useTTS } from '@/hooks/useTTS'
+import { useTTSStore } from '@/store/ttsStore'
 import { useFoodStore } from '@/store/useFoodsHistoryStore'
 import type { FoodItem } from '@/types/FoodItem'
 import { parseFoodToRead } from '@/utils'
@@ -23,7 +23,7 @@ interface HistoryInfoContainerProps {
 }
 
 export default function HistoryInfoContainer({ order }: HistoryInfoContainerProps) {
-  const { speak, isSpeaking, stopSpeak } = useTTS()
+  const { speak, isSpeaking, stopSpeak } = useTTSStore()
   const foods = useFoodStore(state => state.foods)
   const loadFoods = useFoodStore(state => state.loadFoods)
   const isLoading = useFoodStore(state => state.isLoading)

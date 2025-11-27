@@ -1,10 +1,13 @@
 'use client'
 
+import { useState } from 'react'
+
 import { Volume1, X } from 'lucide-react'
 import { toast } from 'sonner'
 
 import NavigationBar from '@/components/NavigationBar'
 import { useScanResultStore } from '@/store/scanResultStore'
+import { useTTSStore } from '@/store/ttsStore'
 import { useFoodStore } from '@/store/useFoodsHistoryStore'
 
 import UnregisteredBarcode from '../scan-result/UnregisteredBarcode'
@@ -23,6 +26,8 @@ interface ScanResultModalProps {
 export default function ScanResultModal({ open, onClose }: ScanResultModalProps) {
   const { data, status } = useScanResultStore()
   const { foods, addFoodsHistoryItem } = useFoodStore()
+  const {speak, isSpeaking, stopSpeak} = useTTSStore()
+  const [currentSlide, setCurrentSlide] = useState(0)
   if (!open) return null
 
   // 타입 가드: 등록되지 않은 바코드인지 확인
@@ -46,6 +51,8 @@ export default function ScanResultModal({ open, onClose }: ScanResultModalProps)
       console.error(e)
     }
   }
+
+
 
   return (
     <dialog open className={DIALOG_CLASS}>
@@ -76,7 +83,7 @@ export default function ScanResultModal({ open, onClose }: ScanResultModalProps)
               </button>
             </div>
             {/* 슬라이드 */}
-            <ScanResultSlide data={data} />
+            <ScanResultSlide data={data} currentSlide={currentSlide} setCurrentSlide={setCurrentSlide} />
             {/* 저장 버튼 */}
             <SaveButton className="mb-15" onClick={handleSave} />
           </>

@@ -14,12 +14,14 @@ import { INDICATOR_CLASS, INDICATOR_WRAPPER_CLASS, SLIDE_INNER_CLASS } from './_
 
 interface Props {
   data: FoodItem
+  currentSlide?: number,
+  setCurrentSlide?: React.Dispatch<React.SetStateAction<number>>
 }
 
 const slides = [NutritionInfo, AiSummary, AllergyInfo, OtherInfo]
 
-export default function ScanResultSlide({ data }: Props) {
-  const [currentSlide, setCurrentSlide] = useState(0)
+export default function ScanResultSlide({ data, currentSlide, setCurrentSlide }: Props) {
+  
   const [touchStart, setTouchStart] = useState(0)
   const [touchEnd, setTouchEnd] = useState(0)
   // 애니메이션 클래스를 제어할 state
@@ -34,7 +36,7 @@ export default function ScanResultSlide({ data }: Props) {
     setTouchEnd(e.targetTouches[0].clientX)
   }
   const handleTouchEnd = () => {
-    if (!touchStart || !touchEnd) return
+    if (!touchStart || !touchEnd || !setCurrentSlide) return
 
     const distance = touchStart - touchEnd
     const minSwipeDistance = 5
@@ -42,13 +44,13 @@ export default function ScanResultSlide({ data }: Props) {
     // 왼쪽으로 스와이프 → 다음 슬라이드 등장(direction = 'right')
     if (distance > minSwipeDistance) {
       setDirection('right')
-      setCurrentSlide(prev => (prev === slides.length - 1 ? 0 : prev + 1))
+      setCurrentSlide((prev: number) => (prev === slides.length - 1 ? 0 : prev + 1))
     }
 
     // 오른쪽으로 스와이프 → 이전 슬라이드 등장(direction = 'left')
     if (distance < -minSwipeDistance) {
       setDirection('left')
-      setCurrentSlide(prev => (prev === 0 ? slides.length - 1 : prev - 1))
+      setCurrentSlide((prev: number) => (prev === 0 ? slides.length - 1 : prev - 1))
     }
 
     setTouchStart(0)
@@ -57,8 +59,8 @@ export default function ScanResultSlide({ data }: Props) {
 
   // 인디케이터 클릭 시도 동일하게 방향 설정
   const goToSlide = (index: number) => {
-    if (index === currentSlide) return
-    setDirection(index > currentSlide ? 'left' : 'right')
+    if (index === currentSlide || !setCurrentSlide) return
+    setDirection(index > (currentSlide || 0) ? 'left' : 'right')
     setCurrentSlide(index)
   }
 
@@ -92,21 +94,21 @@ export default function ScanResultSlide({ data }: Props) {
       onTouchEnd={handleTouchEnd}
     >
       <div
-        key={currentSlide}
+        key={currentSlide || 0}
         aria-live="polite"
         className={`${SLIDE_INNER_CLASS} ${animationClass}`}
       >
-        {currentSlide === 0 && <NutritionInfo data={data} />}
-        {currentSlide === 1 && <AiSummary data={data} />}
-        {currentSlide === 2 && <AllergyInfo data={data} />}
-        {currentSlide === 3 && <OtherInfo data={data} />}
+        {(currentSlide || 0) === 0 && <NutritionInfo data={data} />}
+        {(currentSlide || 0) === 1 && <AiSummary data={data} />}
+        {(currentSlide || 0) === 2 && <AllergyInfo data={data} />}
+        {(currentSlide || 0) === 3 && <OtherInfo data={data} />}
       </div>
 
       <div className={INDICATOR_WRAPPER_CLASS}>
         {slides.map((_, index) => (
           <button
             key={index}
-            className={INDICATOR_CLASS(index, currentSlide)}
+            className={INDICATOR_CLASS(index, currentSlide || 0)}
             onClick={() => goToSlide(index)}
           />
         ))}

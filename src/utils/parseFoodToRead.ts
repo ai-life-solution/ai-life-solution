@@ -26,7 +26,9 @@ export default function parseFoodToRead(food: ParseFoodToReadParams): string {
   }
 
   if (food.nutritions && food.nutritions.length > 0) {
-    const nutritionsText = food.nutritions.map(n => `${n.name} ${n.amount}${n.unit}`).join(', ')
+    const nutritionsText = food.nutritions
+      .map(n => `${n.name} ${n.amount}${n.unit}${n.dailyRatio ? ` 일일 섭취량의 ${n.dailyRatio}%` : ''}`)
+      .join(', ')
     parts.push(`영양성분 ${nutritionsText}`)
   }
 
