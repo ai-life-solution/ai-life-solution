@@ -17,7 +17,7 @@ export default function CertSection({ data }: CertSectionProps) {
         {data.map(cert => (
           <li key={cert.certNm} className="flex justify-between">
             <Image src={cert.certIng || ''} height={40} width={40} alt={cert.certNm} />
-            <p className='flex self-center'>{cert.certNm}</p>
+            <p className="flex self-center">{cert.certNm}</p>
           </li>
         ))}
       </ul>
