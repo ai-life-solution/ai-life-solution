@@ -30,10 +30,9 @@ export default function HistoryInfoContainer({ order }: HistoryInfoContainerProp
   const isInitialized = useFoodStore(state => state.isInitialized)
   const lastError = useFoodStore(state => state.lastError)
 
-
   const speakFoodItem = (data: FoodItem) => {
     if (!data) {
-      speak("데이터가 없습니다.")
+      speak('데이터가 없습니다.')
       return
     }
 
