@@ -1,22 +1,30 @@
 'use client'
 
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 import { ArrowLeft, HomeIcon } from 'lucide-react'
+
+import { useTTSStore } from '@/store/ttsStore'
 
 import { STYLE } from '../_constants/style'
 
 export default function HeaderButtonContainer() {
   const router = useRouter()
+  const { routerMoveWithTTSClose } = useTTSStore()
   return (
     <div className={STYLE.HEADER_BUTTON_CONTAINER.CONTAINER}>
-      <button className={STYLE.HEADER_BUTTON_CONTAINER.BUTTON} onClick={() => router.back()}>
+      <button
+        className={STYLE.HEADER_BUTTON_CONTAINER.BUTTON}
+        onClick={() => routerMoveWithTTSClose(() => router.back())}
+      >
         <ArrowLeft size={24} strokeWidth={1.5} color="var(--color-primary)" />
       </button>
-      <Link className={STYLE.HEADER_BUTTON_CONTAINER.BUTTON} href="/">
+      <button
+        className={STYLE.HEADER_BUTTON_CONTAINER.BUTTON}
+        onClick={() => routerMoveWithTTSClose(() => router.push('/'))}
+      >
         <HomeIcon size={24} strokeWidth={1.5} color="var(--color-primary)" />
-      </Link>
+      </button>
     </div>
   )
 }
