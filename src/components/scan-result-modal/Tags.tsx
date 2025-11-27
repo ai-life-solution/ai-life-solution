@@ -6,9 +6,9 @@ interface TagsProps {
 
 export default function Tags({ tags }: TagsProps) {
   return (
-    <div className="flex gap-1.5 whitespace-nowrap">
+    <div className="flex gap-1.5 flex-wrap ">
       {tags.map(tag => (
-        <p key={tag} className={TAG_ITEM_CLASS}>
+        <p key={tag} className={`${TAG_ITEM_CLASS} whitespace-nowrap`}>
           {tag}
         </p>
       ))}

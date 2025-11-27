@@ -1,15 +1,17 @@
 'use client'
 
-import { X } from 'lucide-react'
+import { Volume1, X } from 'lucide-react'
 import { toast } from 'sonner'
 
 import NavigationBar from '@/components/NavigationBar'
 import { useScanResultStore } from '@/store/scanResultStore'
 import { useFoodStore } from '@/store/useFoodsHistoryStore'
 
+import UnregisteredBarcode from '../scan-result/UnregisteredBarcode'
+
 import { DIALOG_CLASS, MODAL_INNER_CLASS } from './_constants/style'
+import { SaveButton } from './Buttons'
 import LoadingStatus from './LoadingStatus'
-import SaveButton from './SaveButton'
 import ScanResultSlide from './ScanResultSlide'
 import Tags from './Tags'
 
@@ -23,8 +25,11 @@ export default function ScanResultModal({ open, onClose }: ScanResultModalProps)
   const { foods, addFoodsHistoryItem } = useFoodStore()
   if (!open) return null
 
+  // 타입 가드: 등록되지 않은 바코드인지 확인
+  const isUnregistered = data && !('productName' in data)
+
   const handleSave = async () => {
-    if (!data) return
+    if (!data || isUnregistered) return
     const lastOrder = foods[0]?.order ?? 0
 
     const newEntry = {
@@ -56,21 +61,29 @@ export default function ScanResultModal({ open, onClose }: ScanResultModalProps)
         {/*상태 메시지 */}
         <LoadingStatus status={status} />
 
-        {status === 'success' && data ? (
+        {/* 등록되지 않은 바코드 스캔 안내 */}
+        {isUnregistered && <UnregisteredBarcode barcode={data.barcode} onRetry={onClose} />}
+
+        {status === 'success' && !isUnregistered && data ? (
           <>
-            {/* 테그 */}
+            {/* 태그 */}
             <Tags tags={data.tags} />
             {/* 제품이름 */}
-            <div className="text-2xl font-bold">{data.productName}</div>
+            <div className="flex text-2xl font-bold gap-4">
+              {data.productName}
+              <button type="button" aria-label="음성듣기" className="text-gray-500">
+                <Volume1 />
+              </button>
+            </div>
             {/* 슬라이드 */}
             <ScanResultSlide data={data} />
             {/* 저장 버튼 */}
-            <SaveButton className="mb-20" onClick={handleSave} />
-            {/* 네비게이션 바 */}
-            <NavigationBar />
+            <SaveButton className="mb-15" onClick={handleSave} />
           </>
         ) : null}
       </div>
+      {/* 네비게이션 바 */}
+      <NavigationBar />
     </dialog>
   )
 }
