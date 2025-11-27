@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { useRouter } from 'next/navigation'
 
+import Quagga from '@ericblade/quagga2'
 import { Html5Qrcode } from 'html5-qrcode'
 import { SwitchCamera, Volume2, VolumeX, X } from 'lucide-react'
 
@@ -12,35 +13,13 @@ import { useScanResultStore } from '@/store/scanResultStore'
 
 import { SCANNER_CONTAINER_CLASS } from '../_constants/style'
 
-// BarcodeDetector 타입 선언
-interface BarcodeDetector {
-  detect(image: HTMLVideoElement | HTMLImageElement): Promise<DetectedBarcode[]>
-}
-
-interface DetectedBarcode {
-  boundingBox: {
-    x: number
-    y: number
-    width: number
-    height: number
-  }
-  rawValue: string
-  format: string
-}
-
-type BarcodeDetectorConstructor = new (options?: { formats?: string[] }) => BarcodeDetector
-
-declare global {
-  interface Window {
-    BarcodeDetector?: BarcodeDetectorConstructor
-  }
-}
-
-// 위치 판단 임계값
-const POSITION_THRESHOLD = 80
-
-// 음성 안내
+// 설정
 const VOICE_COOLDOWN = 2000
+const TRACKING_INTERVAL = 200
+
+// qrbox 설정
+const QRBOX_WIDTH = 250
+const QRBOX_HEIGHT = 150
 
 type Position = 'left' | 'right' | 'up' | 'down' | 'center'
 
@@ -52,19 +31,17 @@ export default function BarcodeScanner() {
   const positionTrackingRef = useRef<NodeJS.Timeout | null>(null)
   const lastVoiceTimeRef = useRef<number>(0)
   const isTTSEnabledRef = useRef(true)
-  const barcodeDetectorRef = useRef<BarcodeDetector | null>(null)
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
   const [facingMode, setFacingMode] = useState<'environment' | 'user'>('environment')
   const [showModal, setShowModal] = useState(false)
   const [scannerKey, setScannerKey] = useState(0)
   const [ttsIcon, setTtsIcon] = useState(true)
-  const [isBarcodeDetectorSupported, setIsBarcodeDetectorSupported] = useState(false)
 
   const { scan } = useScanResultStore()
 
   const speak = useCallback((text: string) => {
     if (!isTTSEnabledRef.current) return
-
     const utterance = new SpeechSynthesisUtterance(text)
     utterance.lang = 'ko-KR'
     utterance.rate = 1.0
@@ -97,11 +74,11 @@ export default function BarcodeScanner() {
 
   const getPositionMessage = (position: Position): string => {
     const messages: Record<Position, string> = {
-      left: '휴대폰을 왼쪽으로 이동하세요',
-      right: '휴대폰을 오른쪽으로 이동하세요',
-      up: '휴대폰을 위로 이동하세요',
-      down: '휴대폰을 아래로 이동하세요',
-      center: '바코드가 중앙입니다',
+      left: '왼쪽으로 이동하세요',
+      right: '오른쪽으로 이동하세요',
+      up: '위로 이동하세요',
+      down: '아래로 이동하세요',
+      center: '바코드가 중앙에 있습니다',
     }
     return messages[position]
   }
@@ -122,10 +99,6 @@ export default function BarcodeScanner() {
   )
 
   const startPositionTracking = useCallback(() => {
-    if (!isBarcodeDetectorSupported || !barcodeDetectorRef.current) {
-      return
-    }
-
     const tryStartTracking = () => {
       const video = document.querySelector('#barcode-reader video') as HTMLVideoElement | null
 
@@ -134,49 +107,109 @@ export default function BarcodeScanner() {
         return
       }
 
+      if (!canvasRef.current) {
+        canvasRef.current = document.createElement('canvas')
+      }
+      const canvas = canvasRef.current
+      const ctx = canvas.getContext('2d')
+      if (!ctx) return
+
       positionTrackingRef.current = setInterval(() => {
-        void (async () => {
-          if (!barcodeDetectorRef.current || !video) return
+        if (!video || video.readyState !== 4) return
 
-          try {
-            const barcodes = await barcodeDetectorRef.current.detect(video)
+        canvas.width = video.videoWidth
+        canvas.height = video.videoHeight
 
-            if (barcodes.length === 0) return
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
 
-            const barcode = barcodes[0]
-            const { boundingBox } = barcode
+        Quagga.decodeSingle(
+          {
+            src: canvas.toDataURL('image/png'),
+            numOfWorkers: 0,
+            locate: true,
+            inputStream: {
+              size: canvas.width,
+            },
+            locator: {
+              patchSize: 'large',
+              halfSample: false,
+            },
+            decoder: {
+              readers: [
+                'ean_reader',
+                'ean_8_reader',
+                'code_128_reader',
+                'code_39_reader',
+                'upc_reader',
+                'upc_e_reader',
+              ],
+            },
+          },
+          result => {
+            if (!result) return
 
-            const barcodeCenterX = boundingBox.x + boundingBox.width / 2
-            const barcodeCenterY = boundingBox.y + boundingBox.height / 2
+            let box = result.box
 
-            const screenCenterX = video.videoWidth / 2
-            const screenCenterY = video.videoHeight / 2
+            if (!box && result.boxes && result.boxes.length > 0) {
+              box = result.boxes.reduce((largest, current) => {
+                const largestArea = Math.abs(
+                  (largest[2][0] - largest[0][0]) * (largest[2][1] - largest[0][1])
+                )
+                const currentArea = Math.abs(
+                  (current[2][0] - current[0][0]) * (current[2][1] - current[0][1])
+                )
+                return currentArea > largestArea ? current : largest
+              })
+            }
 
-            const dx = barcodeCenterX - screenCenterX
-            const dy = barcodeCenterY - screenCenterY
+            if (!box) return
+
+            // 바코드 중심점 계산
+            const barcodeCenterX = (box[0][0] + box[2][0]) / 2
+            const barcodeCenterY = (box[0][1] + box[2][1]) / 2
+
+            // 스케일 비율 계산 (CSS 픽셀 → 비디오 해상도)
+            const scaleX = canvas.width / video.clientWidth
+            const scaleY = canvas.height / video.clientHeight
+
+            // QRBOX 크기를 실제 비디오 해상도에 맞게 확대
+            const scaledQrboxWidth = QRBOX_WIDTH * scaleX
+            const scaledQrboxHeight = QRBOX_HEIGHT * scaleY
+
+            // 화면 중앙 계산
+            const screenCenterX = canvas.width / 2
+            const screenCenterY = canvas.height / 2
+
+            // 확대된 QRBOX 영역 계산
+            const qrLeft = screenCenterX - scaledQrboxWidth / 2
+            const qrRight = screenCenterX + scaledQrboxWidth / 2
+            const qrTop = screenCenterY - scaledQrboxHeight / 2
+            const qrBottom = screenCenterY + scaledQrboxHeight / 2
 
             let position: Position
 
-            if (Math.abs(dx) < POSITION_THRESHOLD && Math.abs(dy) < POSITION_THRESHOLD) {
-              position = 'center'
-            } else if (Math.abs(dx) > Math.abs(dy)) {
-              // 바코드가 오른쪽에 있으면 휴대폰을 오른쪽으로 이동
-              position = dx > 0 ? 'right' : 'left'
+            // QRBOX 영역 기준으로 위치 판단
+            if (barcodeCenterX < qrLeft) {
+              position = 'left'
+            } else if (barcodeCenterX > qrRight) {
+              position = 'right'
+            } else if (barcodeCenterY < qrTop) {
+              position = 'up'
+            } else if (barcodeCenterY > qrBottom) {
+              position = 'down'
             } else {
-              // 바코드가 아래에 있으면 휴대폰을 아래로 이동
-              position = dy > 0 ? 'down' : 'up'
+              // 바코드가 실제 QRBOX 안에 있음
+              position = 'center'
             }
 
             speakPosition(position)
-          } catch (_error) {
-            // BarcodeDetector 에러 무시
           }
-        })()
-      }, 500)
+        )
+      }, TRACKING_INTERVAL)
     }
 
     setTimeout(tryStartTracking, 1000)
-  }, [isBarcodeDetectorSupported, speakPosition])
+  }, [speakPosition])
 
   const cleanupScanner = useCallback(async () => {
     clearGuideInterval()
@@ -196,31 +229,6 @@ export default function BarcodeScanner() {
   }, [clearGuideInterval, clearPositionTracking, stopSpeak])
 
   useEffect(() => {
-    const checkBarcodeDetector = () => {
-      if ('BarcodeDetector' in window && window.BarcodeDetector) {
-        setIsBarcodeDetectorSupported(true)
-        barcodeDetectorRef.current = new window.BarcodeDetector({
-          formats: [
-            'ean_13',
-            'ean_8',
-            'upc_a',
-            'upc_e',
-            'code_128',
-            'code_39',
-            'code_93',
-            'codabar',
-            'itf',
-          ],
-        })
-      } else {
-        setIsBarcodeDetectorSupported(false)
-      }
-    }
-
-    checkBarcodeDetector()
-  }, [])
-
-  useEffect(() => {
     const scanner = new Html5Qrcode('barcode-reader')
     scannerRef.current = scanner
     scanStartTimeRef.current = Date.now()
@@ -233,7 +241,7 @@ export default function BarcodeScanner() {
           { facingMode },
           {
             fps: 10,
-            qrbox: { width: 250, height: 150 },
+            qrbox: { width: QRBOX_WIDTH, height: QRBOX_HEIGHT },
           },
           decodedText => {
             clearGuideInterval()
@@ -242,18 +250,15 @@ export default function BarcodeScanner() {
             speak('바코드를 찾았습니다!')
             vibrate([200, 100, 200])
             void scanner.stop()
-            // console.log('바코드 스캔 성공:', decodedText)
             setShowModal(true)
             scan(`0${decodedText}`)
           },
           () => {
-            // 스캔 실패 시 무시하고 계속 시도
+            // 스캔 실패 시 무시
           }
         )
 
-        if (isBarcodeDetectorSupported) {
-          startPositionTracking()
-        }
+        startPositionTracking()
 
         guideIntervalRef.current = setInterval(() => {
           const elapsed = (Date.now() - scanStartTimeRef.current) / 1000
@@ -286,7 +291,6 @@ export default function BarcodeScanner() {
     clearPositionTracking,
     stopSpeak,
     cleanupScanner,
-    isBarcodeDetectorSupported,
     startPositionTracking,
     scannerKey,
   ])
