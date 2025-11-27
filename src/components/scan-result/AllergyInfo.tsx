@@ -10,7 +10,7 @@ interface Props {
 
 export default function AllergyInfo({ data }: Props) {
   return (
-    <div className="flex flex-col h-full justify-center items-center gap-4">
+    <div className="flex flex-col w-full h-full items-center gap-4 overflow-y-scroll pb-10">
       {/* 알러지유발 물질 갯수 표시 */}
       <p className="font-bold text-(--color-accent-red) text-xl">
         알러지 유발물질 {data.allergens.length}개
