@@ -25,15 +25,18 @@ export default function parseFoodToRead(food: ParseFoodToReadParams): string {
     parts.push(`알레르기 유발 성분 ${food.allergens.join(', ')}`)
   }
 
-  if (food.nutritions && food.nutritions.length > 0) {
-    const nutritionsText = food.nutritions
-      .map(n => `${n.name} ${n.amount}${n.unit}${n.dailyRatio ? ` 일일 섭취량의 ${n.dailyRatio}%` : ''}`)
-      .join(', ')
-    parts.push(`영양성분 ${nutritionsText}`)
-  }
-
   if (food.ingredients && food.ingredients.length > 0) {
     parts.push(`원재료명 및 함량 ${food.ingredients.join(', ')}`)
+  }
+
+  if (food.nutritions && food.nutritions.length > 0) {
+    const nutritionsText = food.nutritions
+      .map(
+        n =>
+          `${n.name} ${n.amount}${n.unit}${n.dailyRatio ? ` 일일 섭취량의 ${n.dailyRatio}%` : ''}`
+      )
+      .join(', ')
+    parts.push(`영양성분 ${nutritionsText}`)
   }
 
   if (food.description) {

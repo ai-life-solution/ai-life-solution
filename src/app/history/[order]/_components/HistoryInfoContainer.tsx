@@ -13,6 +13,7 @@ import { parseFoodToRead } from '@/utils'
 import { STYLE } from '../_constants/style'
 
 import AllergenSection from './AllergenSection'
+import CertSection from './CertSection'
 import DescriptionSection from './DescriptionSection'
 import IngridientSection from './IngridientSection'
 import NutritionSection from './NutritionSection'
@@ -91,9 +92,10 @@ export default function HistoryInfoContainer({ order }: HistoryInfoContainerProp
 
         <WeightSection data={data.weight ?? ''} />
         <AllergenSection allergens={data.allergens} />
-        <NutritionSection source={data.nutritions} title="영양 성분" />
         <IngridientSection source={data.ingredients} title="원재료명 및 함량" />
+        <NutritionSection source={data.nutritions} title="영양 성분" />
         <DescriptionSection source={data.description ?? ''} title="AI 요약" />
+        <CertSection data={data.certifications} />
       </>
     )
   }

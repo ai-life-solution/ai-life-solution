@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type TouchEvent } from 'react'
 
+import { useTTSStore } from '@/store/ttsStore'
 import type { FoodItem } from '@/types/FoodItem'
 
 import AiSummary from '../scan-result/AiSummary'
@@ -14,20 +15,20 @@ import { INDICATOR_CLASS, INDICATOR_WRAPPER_CLASS, SLIDE_INNER_CLASS } from './_
 
 interface Props {
   data: FoodItem
-  currentSlide?: number,
+  currentSlide?: number
   setCurrentSlide?: React.Dispatch<React.SetStateAction<number>>
 }
 
 const slides = [NutritionInfo, AiSummary, AllergyInfo, OtherInfo]
 
 export default function ScanResultSlide({ data, currentSlide, setCurrentSlide }: Props) {
-  
   const [touchStart, setTouchStart] = useState(0)
   const [touchEnd, setTouchEnd] = useState(0)
   // 애니메이션 클래스를 제어할 state
   const [animationClass, setAnimationClass] = useState('')
   // 이동 방향을 기록 (null 상태를 유지하여 스냅샷 방지)
   const [direction, setDirection] = useState<'left' | 'right' | null>(null)
+  const { stopSpeak } = useTTSStore()
 
   const handleTouchStart = (e: TouchEvent) => {
     setTouchStart(e.targetTouches[0].clientX)
@@ -60,6 +61,7 @@ export default function ScanResultSlide({ data, currentSlide, setCurrentSlide }:
   // 인디케이터 클릭 시도 동일하게 방향 설정
   const goToSlide = (index: number) => {
     if (index === currentSlide || !setCurrentSlide) return
+    stopSpeak()
     setDirection(index > (currentSlide || 0) ? 'left' : 'right')
     setCurrentSlide(index)
   }
@@ -109,7 +111,9 @@ export default function ScanResultSlide({ data, currentSlide, setCurrentSlide }:
           <button
             key={index}
             className={INDICATOR_CLASS(index, currentSlide || 0)}
-            onClick={() => goToSlide(index)}
+            onClick={() => {
+              goToSlide(index)
+            }}
           />
         ))}
       </div>

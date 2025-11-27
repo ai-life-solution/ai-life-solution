@@ -1,25 +1,23 @@
-import type { FoodItem } from "@/types/FoodItem";
-import parseFoodToRead from "@/utils/parseFoodToRead";
+import type { FoodItem } from '@/types/FoodItem'
+import parseFoodToRead from '@/utils/parseFoodToRead'
 
-export function parsePartial(food: FoodItem, currentSlide: number) {
-    switch (currentSlide) {
-        case 0:
-            parseFoodToRead({ nutritions: food.nutritions })
-            break;
-        case 1:
-            parseFoodToRead({ description: food.description })
-            break;
-        case 2:
-            parseFoodToRead({ allergens: food.allergens })
-            break;
-        case 3:
-            parseFoodToRead({ 
-                ingredients: food.ingredients,
-                certifications: food.certifications 
-            })
-            break;
-    
-        default:
-            break;
-    }
+export function parsePartial(food: FoodItem, currentSlide: number): string {
+  switch (currentSlide) {
+    case 0:
+      return parseFoodToRead({
+        ingredients: food.ingredients,
+        nutritions: food.nutritions,
+      })
+    case 1:
+      return parseFoodToRead({ description: food.description })
+    case 2:
+      return parseFoodToRead({ allergens: food.allergens })
+    case 3:
+      return parseFoodToRead({
+        certifications: food.certifications,
+      })
+
+    default:
+      return ''
+  }
 }

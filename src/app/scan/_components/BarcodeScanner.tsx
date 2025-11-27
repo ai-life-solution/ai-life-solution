@@ -10,6 +10,7 @@ import { SwitchCamera, Volume2, VolumeX, X } from 'lucide-react'
 
 import ScanResultModal from '@/components/scan-result-modal/ScanResultModal'
 import { useScanResultStore } from '@/store/scanResultStore'
+import { useTTSStore } from '@/store/ttsStore'
 
 import { SCANNER_CONTAINER_CLASS } from '../_constants/style'
 
@@ -37,6 +38,7 @@ export default function BarcodeScanner() {
   const [showModal, setShowModal] = useState(false)
   const [scannerKey, setScannerKey] = useState(0)
   const [ttsIcon, setTtsIcon] = useState(true)
+  const { stopSpeak: stopSpeakGlobal } = useTTSStore()
 
   const { scan } = useScanResultStore()
 
@@ -312,11 +314,12 @@ export default function BarcodeScanner() {
 
   const handleClose = async () => {
     await cleanupScanner()
-    router.push('/')
+    router.back()
   }
 
   const handleModalClose = () => {
     setShowModal(false)
+    stopSpeakGlobal()
     setScannerKey(prev => prev + 1)
   }
 
