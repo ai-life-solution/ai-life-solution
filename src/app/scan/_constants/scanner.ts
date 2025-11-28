@@ -24,7 +24,7 @@ export const POSITION_MESSAGES = {
   right: '카메라를 오른쪽으로 이동하세요',
   up: '카메라를 위로 이동하세요',
   down: '카메라를 아래로 이동하세요',
-  center: '카메라를 바코드가 중앙에 있습니다',
+  center: '바코드가 중앙에 있습니다. 천천히 가까이 해보세요',
 } as const
 
 export type Position = keyof typeof POSITION_MESSAGES
