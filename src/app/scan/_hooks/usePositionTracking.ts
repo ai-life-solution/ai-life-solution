@@ -17,6 +17,7 @@ export function usePositionTracking({ onPositionDetected }: UsePositionTrackingP
   const positionTrackingRef = useRef<NodeJS.Timeout | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const lastVoiceTimeRef = useRef<number>(0)
+  const lastPositionRef = useRef<Position | null>(null)
 
   const clearPositionTracking = useCallback(() => {
     if (positionTrackingRef.current) {
@@ -28,9 +29,17 @@ export function usePositionTracking({ onPositionDetected }: UsePositionTrackingP
   const speakPositionWithCooldown = useCallback(
     (position: Position) => {
       const now = Date.now()
+      // 쿨다운 체크
       if (now - lastVoiceTimeRef.current < VOICE_CONFIG.COOLDOWN) {
         return
       }
+
+      // 같은 position이면 안내 안 함
+      if (lastPositionRef.current === position) {
+        return
+      }
+
+      lastPositionRef.current = position
       lastVoiceTimeRef.current = now
       onPositionDetected(position)
     },
@@ -66,7 +75,7 @@ export function usePositionTracking({ onPositionDetected }: UsePositionTrackingP
             numOfWorkers: 0,
             locate: true,
             inputStream: { size: canvas.width },
-            locator: { patchSize: 'large', halfSample: false },
+            locator: { patchSize: 'medium', halfSample: false },
             decoder: {
               readers: [
                 'ean_reader',
