@@ -20,11 +20,11 @@ export const GUIDE_TIMING = {
 
 // 위치 메시지
 export const POSITION_MESSAGES = {
-  left: '왼쪽으로 이동하세요',
-  right: '오른쪽으로 이동하세요',
-  up: '위로 이동하세요',
-  down: '아래로 이동하세요',
-  center: '바코드가 중앙에 있습니다',
+  left: '카메라를 왼쪽으로 이동하세요',
+  right: '카메라를 오른쪽으로 이동하세요',
+  up: '카메라를 위로 이동하세요',
+  down: '카메라를 아래로 이동하세요',
+  center: '카메라를 바코드가 중앙에 있습니다',
 } as const
 
 export type Position = keyof typeof POSITION_MESSAGES
