@@ -131,6 +131,8 @@ project/
 │   ├── hooks/                 # 커스텀 React 훅
 │   ├── libs/                  # 외부 라이브러리 연동
 │   │   └── api/               # API 클라이언트 (푸드 QR)
+│   ├── services/              # 도메인 비즈니스 로직
+│       └── getFoodItem.ts     # API 응답을 가공 비즈니스 로직을 처리
 │   ├── store/                 # 상태 관리 (Zustand)
 │   │   ├── scanResultStore.tsx    # 스캔 결과 상태
 │   │   └── useFoodsHistoryStore.ts # 히스토리 상태
