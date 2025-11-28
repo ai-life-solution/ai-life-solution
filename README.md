@@ -2,6 +2,7 @@
 
 > 시각 장애인을 위한 AI 기반 음성 안내 바코드 스캐너
 > HearCode는 한국산업기술평가관리원(KEIT)이 주최한 **『AI 라이프 솔루션 챌린지』** 공모전을 위해 개발된 웹 애플리케이션입니다. 선정된 AI 라이프 아이디어인 "들리는 바코드"를 실제 구현하여, 시각 장애인이 일상생활에서 제품 정보를 쉽게 확인할 수 있도록 돕습니다.
+> [Food QR API](https://data.mfds.go.kr/OPCAA01P01?srvcNm=FoodQrInfoService&callBackFn=fnPopupCallback)에 등록된 제품만 가능합니다.
 
 [배포 주소 바로가기](https://hearcode.vercel.app/)
 
@@ -36,7 +37,6 @@
 #### 석정일
 
 - 프로젝트 초기 세팅 및 구조 설계
-- 공통 컴포넌트 제작 (버튼)
 - 랜딩, history 페이지 구현
 - DB 점검 및 CRUD 테스트
 - AI api 연결 및 서버액션 추가
@@ -160,7 +160,7 @@ project/
 └── tsconfig.json              # TypeScript 설정
 ```
 
-### 🔎 실행 방법
+### 실행 방법
 
 ```bash
 # 1. 프로젝트 클론 (폴더 이름을 'HearCode'로 지정)
