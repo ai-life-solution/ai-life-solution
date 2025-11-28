@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 
 import { Volume1 } from 'lucide-react'
+import { useShallow } from 'zustand/shallow'
 import { toast } from 'sonner'
 
 import { useTTSStore } from '@/store/ttsStore'
@@ -36,13 +37,15 @@ interface HistoryInfoContainerProps {
  */
 export default function HistoryInfoContainer({ order }: HistoryInfoContainerProps) {
   const { speak, isSpeaking, stopSpeak } = useTTSStore()
-  const { foods, isLoading, isInitialized, lastError, loadFoods } = useFoodStore(state => ({
-    foods: state.foods,
-    isLoading: state.isLoading,
-    isInitialized: state.isInitialized,
-    lastError: state.lastError,
-    loadFoods: state.loadFoods,
-  }))
+  const { foods, isLoading, isInitialized, lastError, loadFoods } = useFoodStore(
+    useShallow(state => ({
+      foods: state.foods,
+      isLoading: state.isLoading,
+      isInitialized: state.isInitialized,
+      lastError: state.lastError,
+      loadFoods: state.loadFoods,
+    }))
+  )
 
   useEffect(() => {
     if (isInitialized) return
