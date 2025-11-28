@@ -124,6 +124,7 @@ project/
 │   │   ├── MainButton.tsx     # 메인 버튼 컴포넌트
 │   │   ├── NavigationBar.tsx  # 네비게이션 바
 │   │   ├── Popover.tsx        # 팝오버/모달 다이얼로그
+│   │   ├── Spinner.tsx        # 로딩 스피너 컴포넌트
 │   │   ├── scan-result/       # 스캔 결과 관련 컴포넌트
 │   │   └── scan-result-modal/ # 스캔 결과 모달 컴포넌트
 │   ├── db/                    # IndexedDB 관련 (히스토리 저장)
