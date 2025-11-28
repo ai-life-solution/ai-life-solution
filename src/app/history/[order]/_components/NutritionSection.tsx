@@ -16,7 +16,10 @@ export default function NutritionSection({ source, title }: NutritionSectionProp
       <ul className={STYLE.HISTORY_INFO.PARAGRPAPH}>
         {source.map(data => (
           <li key={data.name} className="flex justify-between">
-            <span>{data.name}</span>
+            <span>
+              {data.name}
+              {data.dailyRatio && data.dailyRatio > 0 && `(${data.dailyRatio}%)`}
+            </span>
             <span>
               {data.amount}
               {data.unit}

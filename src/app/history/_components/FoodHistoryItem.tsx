@@ -25,6 +25,7 @@ export function FoodHistoryItem(props: FoodHistoryItemProps) {
         if (item.order) removeFoodItem(item.order)
       },
       isDanger: true,
+      dangerLabel: '삭제하시겠습니까?',
     },
   ]
 

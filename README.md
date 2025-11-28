@@ -3,7 +3,7 @@
 > 시각 장애인을 위한 AI 기반 음성 안내 바코드 스캐너
 > HearCode는 한국산업기술평가관리원(KEIT)이 주최한 **『AI 라이프 솔루션 챌린지』** 공모전을 위해 개발된 웹 애플리케이션입니다. 선정된 AI 라이프 아이디어인 "들리는 바코드"를 실제 구현하여, 시각 장애인이 일상생활에서 제품 정보를 쉽게 확인할 수 있도록 돕습니다.
 
-[배포 주소 바로가기]
+[배포 주소 바로가기](https://hearcode.vercel.app/)
 
 ## 팀 소개
 
@@ -11,11 +11,11 @@
 
 ### 팀원 소개 및 역할
 
-| 팀원    | 역할       | 주요 담당             | GitHub                                       |
-| ------ | ---------- | ------------------- | -------------------------------------------- |
-| 안동원  | PM, QA, FE | 바코드 스캔           | [@dongwonAhn](https://github.com/dongwonAhn) |
-| 우혜리  | PL, QA, FE | 식품영양 api          | [@WUHYERI](https://github.com/WUHYERI)       |
-| 석정일  | PL, QA, FE | history, AI 서버 액션 | [@but212](https://github.com/but212)         |
+| 팀원   | 역할       | 주요 담당             | GitHub                                       |
+| ------ | ---------- | --------------------- | -------------------------------------------- |
+| 안동원 | PM, QA, FE | 바코드 스캔           | [@dongwonAhn](https://github.com/dongwonAhn) |
+| 우혜리 | PL, QA, FE | 식품영양 api          | [@WUHYERI](https://github.com/WUHYERI)       |
+| 석정일 | PL, QA, FE | history, AI 서버 액션 | [@but212](https://github.com/but212)         |
 
 ### 팀원별 주요 기여
 
@@ -72,30 +72,30 @@
 
 ### 주요 기능
 
-| 기능                 | 설명                                                                                                                                   |
-| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| **바코드 스캔**      | HTML5-QRCode 기반 실시간 바코드 디코딩 · 카메라 전환 지원 · 스캔 진행 상황 시각적 피드백 · 햅틱 피드백 제공                      |
-| **음성 가이드**      | Web Speech API 기반 한국어 TTS · 스캔 진행 상황 음성 안내 · 제품 정보 자동 읽어주기 · AI 요약 정보 음성 제공                        |
-| **제품 정보 조회**   | 식품의약품안전처 푸드QR API 연동 · 5개 API 병렬 호출(기본/원재료/알러지/영양/인증) · 제품명, 제조사, 용량 정보 · 원재료 및 영양 성분 |
-| **AI 기반 요약**     | OpenRouter API 연동(Grok-4.1-fast) · 식품 정보 200자 이내 요약 · 알레르기 및 영양 정보 쉽게 설명                                 |
-| **스캔 히스토리**    | IndexedDB 기반 로컬 저장 · 최근 스캔 제품 목록 조회 · 개별 항목 삭제 · 제품 정보 재확인 가능                                           |
-| **데이터 캐싱**     | localStorage로 최근 스캔 결과 캐싱 · Zustand persist로 상태 저장 · 이전에 조회한 제품은 재조회 가능                                 |
-| **카메라 전환**      | 전면/후면 카메라 자유 전환 · 스캔 중에도 전환 가능                                                                                     |
-| **접근성 기능**      | 음성 안내 및 햅틱 피드백 · aria-label 적용 · 키보드 네비게이션 지원                                                                 |
+| 기능               | 설명                                                                                                                                 |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| **바코드 스캔**    | HTML5-QRCode 기반 실시간 바코드 디코딩 · 카메라 전환 지원 · 스캔 진행 상황 시각적 피드백 · 햅틱 피드백 제공                          |
+| **음성 가이드**    | Web Speech API 기반 한국어 TTS · 스캔 진행 상황 음성 안내 · 제품 정보 자동 읽어주기 · AI 요약 정보 음성 제공                         |
+| **제품 정보 조회** | 식품의약품안전처 푸드QR API 연동 · 5개 API 병렬 호출(기본/원재료/알러지/영양/인증) · 제품명, 제조사, 용량 정보 · 원재료 및 영양 성분 |
+| **AI 기반 요약**   | OpenRouter API 연동(Grok-4.1-fast) · 식품 정보 200자 이내 요약 · 알레르기 및 영양 정보 쉽게 설명                                     |
+| **스캔 히스토리**  | IndexedDB 기반 로컬 저장 · 최근 스캔 제품 목록 조회 · 개별 항목 삭제 · 제품 정보 재확인 가능                                         |
+| **데이터 캐싱**    | localStorage로 최근 스캔 결과 캐싱 · Zustand persist로 상태 저장 · 이전에 조회한 제품은 재조회 가능                                  |
+| **카메라 전환**    | 전면/후면 카메라 자유 전환 · 스캔 중에도 전환 가능                                                                                   |
+| **접근성 기능**    | 음성 안내 및 햅틱 피드백 · aria-label 적용 · 키보드 네비게이션 지원                                                                  |
 
 ### 기술 스택
 
-| 분류             | 기술                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 분류             | 기술                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 프론트엔드       | ![Next.js](https://img.shields.io/badge/next.js-ffffff?style=for-the-badge&logo=nextdotjs&logoColor=black) ![TypeScript](https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=white) ![Tailwind CSS](https://img.shields.io/badge/tailwindcss-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white) ![React](https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=white) |
-| 상태 관리 도구   | ![Zustand](https://img.shields.io/badge/Zustand-5B4638?style=for-the-badge&logo=Zustand&logoColor=white) ![TanStack Query](https://img.shields.io/badge/TanStack%20Query-FF4154?style=for-the-badge&logo=reactquery&logoColor=white) |
-| 바코드 스캔     | ![HTML5-QRCode](https://img.shields.io/badge/HTML5--QRCode-000000?style=for-the-badge&logo=html5&logoColor=white) |
-| 데이터 저장     | ![IndexedDB](https://img.shields.io/badge/IndexedDB-4285F4?style=for-the-badge&logo=javascript&logoColor=white) |
-| AI            | ![OpenRouter](https://img.shields.io/badge/OpenRouter-000000?style=for-the-badge&logo=openrouter&logoColor=white) ![Grok 4.1 Fast](https://img.shields.io/badge/Grok%204.1%20Fast-FF6B35?style=for-the-badge&logo=xai&logoColor=white) |
-| 패키지 매니저    | ![Bun](https://img.shields.io/badge/bun-000000?style=for-the-badge&logo=bun&logoColor=white) |
-| 배포             | ![Vercel](https://img.shields.io/badge/vercel-000000?style=for-the-badge&logo=vercel&logoColor=white) |
-| 버전 관리 & 협업 | ![Git](https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white) ![GitHub](https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white) ![Discord](https://img.shields.io/badge/discord-5865F2?style=for-the-badge&logo=discord&logoColor=white) ![Notion](https://img.shields.io/badge/notion-ffffff?style=for-the-badge&logo=notion&logoColor=black) |
-| 디자인           | ![Figma](https://img.shields.io/badge/figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white) |
+| 상태 관리 도구   | ![Zustand](https://img.shields.io/badge/Zustand-5B4638?style=for-the-badge&logo=Zustand&logoColor=white) ![TanStack Query](https://img.shields.io/badge/TanStack%20Query-FF4154?style=for-the-badge&logo=reactquery&logoColor=white)                                                                                                                                                                                                                  |
+| 바코드 스캔      | ![HTML5-QRCode](https://img.shields.io/badge/HTML5--QRCode-000000?style=for-the-badge&logo=html5&logoColor=white)                                                                                                                                                                                                                                                                                                                                     |
+| 데이터 저장      | ![IndexedDB](https://img.shields.io/badge/IndexedDB-4285F4?style=for-the-badge&logo=javascript&logoColor=white)                                                                                                                                                                                                                                                                                                                                       |
+| AI               | ![OpenRouter](https://img.shields.io/badge/OpenRouter-000000?style=for-the-badge&logo=openrouter&logoColor=white) ![Grok 4.1 Fast](https://img.shields.io/badge/Grok%204.1%20Fast-FF6B35?style=for-the-badge&logo=xai&logoColor=white)                                                                                                                                                                                                                |
+| 패키지 매니저    | ![Bun](https://img.shields.io/badge/bun-000000?style=for-the-badge&logo=bun&logoColor=white)                                                                                                                                                                                                                                                                                                                                                          |
+| 배포             | ![Vercel](https://img.shields.io/badge/vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)                                                                                                                                                                                                                                                                                                                                                 |
+| 버전 관리 & 협업 | ![Git](https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white) ![GitHub](https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white) ![Discord](https://img.shields.io/badge/discord-5865F2?style=for-the-badge&logo=discord&logoColor=white) ![Notion](https://img.shields.io/badge/notion-ffffff?style=for-the-badge&logo=notion&logoColor=black)                                     |
+| 디자인           | ![Figma](https://img.shields.io/badge/figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)                                                                                                                                                                                                                                                                                                                                                    |
 
 ---
 
@@ -194,12 +194,12 @@ bun dev
 
 #### 기타 명령어
 
-| 목적           | 명령어              | 설명              |
-| -------------- | ------------------- | ----------------- |
-| 코드 품질 검사 | `bun lint`          | ESLint 검사        |
-| 코드 포맷팅    | `bun format`        | Prettier 자동 포맷 |
-| 타입 검사      | `bun typecheck`     | TypeScript 타입 체크 |
-| 프로덕션 빌드  | `bun prod`          | Next.js 빌드 및 시작 |
+| 목적           | 명령어          | 설명                 |
+| -------------- | --------------- | -------------------- |
+| 코드 품질 검사 | `bun lint`      | ESLint 검사          |
+| 코드 포맷팅    | `bun format`    | Prettier 자동 포맷   |
+| 타입 검사      | `bun typecheck` | TypeScript 타입 체크 |
+| 프로덕션 빌드  | `bun prod`      | Next.js 빌드 및 시작 |
 
 ### 문제 해결 가이드
 

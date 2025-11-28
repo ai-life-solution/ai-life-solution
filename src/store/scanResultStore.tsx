@@ -16,8 +16,7 @@ export type Status = 'loading' | 'success' | 'error'
 
 interface ScanResultStore {
   status: Status
-  data: FoodItem | null
-  tags: string[]
+  data: FoodItem | { barcode: string } | null
   scan: (barcode: string) => Promise<void>
 }
 
@@ -26,7 +25,6 @@ export const useScanResultStore = create<ScanResultStore>()(
     set => ({
       status: 'loading',
       data: null,
-      tags: [],
 
       /**
        * 바코드를 받아 상품 정보를 조회하는 비동기 액션
@@ -35,7 +33,7 @@ export const useScanResultStore = create<ScanResultStore>()(
        * @param barcode - 조회할 상품의 바코드 번호
        */
       scan: async (barcode: string) => {
-        set({ status: 'loading' })
+        set({ status: 'loading', data: null })
         try {
           const [productRes, ingredientRes, allergyRes, nutritionRes, certRes] = await Promise.all([
             fetchProduct(barcode),
@@ -47,7 +45,7 @@ export const useScanResultStore = create<ScanResultStore>()(
 
           const productBody = productRes.response.body
           if (productBody.totalCount === 0) {
-            set({ status: 'error', data: null })
+            set({ status: 'error', data: { barcode } })
             return
           }
 
