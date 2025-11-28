@@ -17,12 +17,16 @@ const navItems = [
 export default function NavigationBar() {
   const rawPathname = usePathname()
   const router = useRouter()
-  const { routerMoveWithTTSClose } = useTTSStore()
+  const { routerMoveWithTTSClose, warmup } = useTTSStore()
 
   // 마지막이 숫자(\d)인 세그먼트(`/%d`)를 제거하는 로직
   const pathname = rawPathname?.replace(/\/\d+$/, '') ?? rawPathname
 
   const handleNavigation = (href: string) => {
+    if (href === '/scan') {
+      warmup()
+    }
+
     routerMoveWithTTSClose(() => {
       router.push(href)
     })

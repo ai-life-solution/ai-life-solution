@@ -62,7 +62,7 @@ export default function ScanResultSlide({ data, currentSlide, setCurrentSlide }:
   const goToSlide = (index: number) => {
     if (index === currentSlide || !setCurrentSlide) return
     stopSpeak()
-    setDirection(index > (currentSlide || 0) ? 'left' : 'right')
+    setDirection(index > (currentSlide || 0) ? 'right' : 'left')
     setCurrentSlide(index)
   }
 
@@ -87,6 +87,10 @@ export default function ScanResultSlide({ data, currentSlide, setCurrentSlide }:
       return () => clearTimeout(timer)
     }
   }, [currentSlide, direction]) // currentSlide 또는 direction이 바뀔 때마다 실행
+
+  useEffect(() => {
+    stopSpeak()
+  }, [currentSlide, stopSpeak])
 
   return (
     <div

@@ -10,6 +10,15 @@ import { STYLE } from '../_constants/style'
 
 import { FoodHistoryItem } from './FoodHistoryItem'
 
+/**
+ * FoodHistoryList 컴포넌트
+ *
+ * 사용자의 식품 조회 히스토리를 목록 형태로 표시하는 컴포넌트입니다.
+ * IndexedDB에서 저장된 식품 히스토리를 로드하고, 로딩 상태, 에러 상태,
+ * 빈 목록 상태를 처리합니다.
+ *
+ * @returns 식품 히스토리 목록을 나타내는 JSX 요소
+ */
 export default function FoodHistoryList() {
   const foods = useFoodStore(state => state.foods)
   const loadFoods = useFoodStore(state => state.loadFoods)

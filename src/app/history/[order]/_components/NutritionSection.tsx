@@ -9,6 +9,17 @@ interface NutritionSectionProps {
   title: string
 }
 
+/**
+ * NutritionSection 컴포넌트
+ *
+ * 식품의 영양 정보를 표시하는 컴포넌트입니다.
+ * 영양소명, 함량, 일일 섭취량 기준치를 리스트 형태로 렌더링합니다.
+ *
+ * @param props - NutritionSectionProps 객체
+ * @param props.source - 표시할 영양소 정보 배열
+ * @param props.title - 섹션 제목
+ * @returns 영양 정보를 나타내는 JSX 요소
+ */
 export default function NutritionSection({ source, title }: NutritionSectionProps) {
   return (
     <section className={STYLE.HISTORY_INFO.SECTION}>

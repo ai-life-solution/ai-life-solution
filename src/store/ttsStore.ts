@@ -8,6 +8,7 @@ interface TTSState {
   speak: (text: string) => void
   stopSpeak: () => void
   toggleTTS: () => void
+  warmup: () => void
   routerMoveWithTTSClose: (navigationCallback?: () => void) => void
 }
 
@@ -50,6 +51,16 @@ export const useTTSStore = create<TTSState>((set, get) => ({
     if (!newEnabled) {
       stopSpeak()
     }
+  },
+
+  /**
+   * 모바일 브라우저 Autoplay Policy 대응
+   * 사용자 클릭 이벤트 내에서 호출하여 오디오 컨텍스트 활성화
+   */
+  warmup: () => {
+    const utterance = new SpeechSynthesisUtterance('')
+    utterance.volume = 0
+    window.speechSynthesis.speak(utterance)
   },
 
   routerMoveWithTTSClose: (navigationCallback?: () => void) => {

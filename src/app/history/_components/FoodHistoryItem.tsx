@@ -14,9 +14,24 @@ interface FoodHistoryItemProps {
   item: FoodHistoryEntry
 }
 
+/**
+ * FoodHistoryItem 컴포넌트
+ *
+ * 식품 히스토리 목록에서 개별 항목을 렌더링하는 컴포넌트입니다.
+ * 제품명을 표시하고, 더보기 메뉴를 통해 삭제 기능을 제공합니다.
+ *
+ * @param props - FoodHistoryItemProps 객체
+ * @param props.item - 표시할 식품 히스토리 항목
+ * @returns 식품 히스토리 항목을 나타내는 JSX 요소
+ */
 export function FoodHistoryItem(props: FoodHistoryItemProps) {
   const removeFoodItem = useFoodStore(state => state.removeFoodItem)
   const { item } = props
+
+  /**
+   * 더보기 메뉴에 표시될 액션 목록
+   * 삭제 액션만 포함되며, 확인 다이얼로그를 통해 사용자 의도를 재확인합니다.
+   */
   const actions: PopoverAction[] = [
     {
       id: 'delete',
