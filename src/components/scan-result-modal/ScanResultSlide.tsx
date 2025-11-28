@@ -62,7 +62,7 @@ export default function ScanResultSlide({ data, currentSlide, setCurrentSlide }:
   const goToSlide = (index: number) => {
     if (index === currentSlide || !setCurrentSlide) return
     stopSpeak()
-    setDirection(index > (currentSlide || 0) ? 'left' : 'right')
+    setDirection(index > (currentSlide || 0) ? 'right' : 'left')
     setCurrentSlide(index)
   }
 

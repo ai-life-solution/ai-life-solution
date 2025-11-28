@@ -9,10 +9,10 @@ interface IngridientSectionProps {
 
 /**
  * IngridientSection 컴포넌트
- * 
+ *
  * 식품의 재료 정보를 표시하는 컴포넌트입니다.
  * 재료 목록을 리스트 형태로 렌더링합니다.
- * 
+ *
  * @param props - IngridientSectionProps 객체
  * @param props.source - 표시할 재료 배열
  * @param props.title - 섹션 제목

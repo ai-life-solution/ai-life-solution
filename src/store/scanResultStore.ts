@@ -1,16 +1,8 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 
-import { summarizeFoodItem } from '@/actions/chat'
-import {
-  fetchAllergyInfo,
-  fetchCertificationInfo,
-  fetchIngredientInfo,
-  fetchNutritionInfo,
-  fetchProduct,
-} from '@/libs/api/food-qr'
+import { addSummary, getFoodItem } from '@/services/getFoodItem'
 import type { FoodItem } from '@/types/FoodItem'
-import transformResData from '@/utils/foodQrTransformer'
 
 export type Status = 'loading' | 'success' | 'error'
 
@@ -18,6 +10,18 @@ interface ScanResultStore {
   status: Status
   data: FoodItem | { barcode: string } | null
   scan: (barcode: string) => Promise<void>
+}
+
+/**
+ * 타입 가드: scanResult가 FoodItem인지 확인
+ */
+function isFoodItem(obj: unknown): obj is FoodItem {
+  // null 체크 + object인지 체크
+  if (obj && typeof obj === 'object') {
+    const keys = Object.keys(obj)
+    return 'barcode' in obj && keys.length > 1
+  }
+  return false
 }
 
 export const useScanResultStore = create<ScanResultStore>()(
@@ -28,47 +32,31 @@ export const useScanResultStore = create<ScanResultStore>()(
 
       /**
        * 바코드를 받아 상품 정보를 조회하는 비동기 액션
-       * - 5개의 푸드 QR API(기본, 원재료, 알러지, 영양, 인증)를 병렬로 호출합니다.
-       * - 응답받은 데이터를 UI용 포맷으로 변환하여 data 상태에 저장합니다.
-       * @param barcode - 조회할 상품의 바코드 번호
        */
       scan: async (barcode: string) => {
         set({ status: 'loading', data: null })
         try {
-          const [productRes, ingredientRes, allergyRes, nutritionRes, certRes] = await Promise.all([
-            fetchProduct(barcode),
-            fetchIngredientInfo(barcode),
-            fetchAllergyInfo(barcode),
-            fetchNutritionInfo(barcode),
-            fetchCertificationInfo(barcode),
-          ])
+          const scanResult = await getFoodItem(barcode)
+          set({ data: scanResult, status: 'success' })
 
-          const productBody = productRes.response.body
-          if (productBody.totalCount === 0) {
-            set({ status: 'error', data: { barcode } })
+          // scanResult가 단순 { barcode } 객체이면 요약 건너뛰기
+          if (!isFoodItem(scanResult)) {
             return
           }
 
-          let newData = transformResData({
-            productRes,
-            ingredientRes,
-            allergyRes,
-            nutritionRes,
-            certRes,
-            barcode,
-          })
-
-          try {
-            const description = await summarizeFoodItem(newData)
-            newData = { ...newData, description }
-          } catch (err) {
-            console.error(`요약실패:${err}`)
+          // FoodItem이면 요약 진행
+          const description = await addSummary(scanResult)
+          if (description) {
+            set(state => ({
+              ...state,
+              data: {
+                ...(state.data as FoodItem),
+                description,
+              },
+              status: 'success',
+            }))
           }
-
-          // ui 상태 세팅
-          set({ data: newData, status: 'success' })
-        } catch (err) {
-          console.warn(err)
+        } catch {
           set({ status: 'error', data: null })
         }
       },
