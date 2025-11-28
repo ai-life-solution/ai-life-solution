@@ -88,6 +88,10 @@ export default function ScanResultSlide({ data, currentSlide, setCurrentSlide }:
     }
   }, [currentSlide, direction]) // currentSlide 또는 direction이 바뀔 때마다 실행
 
+  useEffect(() => {
+    stopSpeak()
+  }, [currentSlide, stopSpeak])
+
   return (
     <div
       className="relative h-full overflow-y-auto overflow-x-hidden"
