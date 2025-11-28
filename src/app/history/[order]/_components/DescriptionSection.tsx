@@ -9,10 +9,10 @@ interface DescriptionSectionProps {
 
 /**
  * DescriptionSection 컴포넌트
- * 
+ *
  * 식품의 상세 설명 정보를 표시하는 컴포넌트입니다.
  * 제목과 설명 텍스트를 섹션 형태로 렌더링합니다.
- * 
+ *
  * @param props - DescriptionSectionProps 객체
  * @param props.source - 표시할 설명 텍스트
  * @param props.title - 섹션 제목

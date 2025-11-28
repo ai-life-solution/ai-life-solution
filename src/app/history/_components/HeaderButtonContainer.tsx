@@ -10,10 +10,10 @@ import { STYLE } from '../_constants/style'
 
 /**
  * HeaderButtonContainer 컴포넌트
- * 
+ *
  * 히스토리 페이지 헤더의 네비게이션 버튼 컨테이너입니다.
  * 뒤로가기 버튼과 홈 버튼을 포함하며, TTS 기능을 종료하고 네비게이션합니다.
- * 
+ *
  * @returns 뒤로가기 및 홈 버튼을 포함한 JSX 요소
  */
 export default function HeaderButtonContainer() {

@@ -1,13 +1,13 @@
-import { summarizeFoodItem } from "@/actions/chat"
+import { summarizeFoodItem } from '@/actions/chat'
 import {
   fetchProduct,
   fetchIngredientInfo,
   fetchAllergyInfo,
   fetchNutritionInfo,
   fetchCertificationInfo,
-} from "@/libs/api/food-qr"
-import type { FoodItem } from "@/types/FoodItem"
-import transformResData from "@/utils/foodQrTransformer"
+} from '@/libs/api/food-qr'
+import type { FoodItem } from '@/types/FoodItem'
+import transformResData from '@/utils/foodQrTransformer'
 
 export async function getFoodItem(barcode: string): Promise<FoodItem | { barcode: string }> {
   try {
