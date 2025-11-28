@@ -15,17 +15,17 @@ export default function ScannerControls({
 }: ScannerControlsProps) {
   return (
     <>
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10">
         <button
           onClick={onToggleTTS}
           aria-label={isTTSEnabled ? 'TTS 끄기' : 'TTS 켜기'}
-          className="flex items-center justify-center w-14 h-14 rounded-full bg-white/20 backdrop-blur-sm text-white"
+          className="flex items-center justify-center w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm text-white"
         >
-          {isTTSEnabled ? <Volume2 size={28} /> : <VolumeX size={28} />}
+          {isTTSEnabled ? <Volume2 size={24} /> : <VolumeX size={24} />}
         </button>
       </div>
 
-      <div className="absolute bottom-8 right-4 z-10">
+      <div className="absolute bottom-6 right-4 z-10">
         <button
           onClick={onRotateCamera}
           aria-label="카메라 전환"
