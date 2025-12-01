@@ -3,8 +3,8 @@
 import { useEffect } from 'react'
 
 import { Volume1 } from 'lucide-react'
-import { useShallow } from 'zustand/shallow'
 import { toast } from 'sonner'
+import { useShallow } from 'zustand/shallow'
 
 import { useTTSStore } from '@/store/ttsStore'
 import { useFoodStore } from '@/store/useFoodsHistoryStore'

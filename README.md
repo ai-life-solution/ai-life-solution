@@ -1,7 +1,7 @@
 # ![HearCode](./public/svg/logo.svg)
 
-> 시각 장애인을 위한 AI 기반 음성 안내 바코드 스캐너 <br>
-> HearCode는 한국산업기술평가관리원(KEIT)이 주최한 **『AI 라이프 솔루션 챌린지』** 공모전을 위해 개발된 웹 애플리케이션입니다. 선정된 AI 라이프 아이디어인 "들리는 바코드"를 실제 구현하여, 시각 장애인이 일상생활에서 제품 정보를 쉽게 확인할 수 있도록 돕습니다. <br>
+> 시각 장애인을 위한 AI 기반 음성 안내 바코드 스캐너  
+> HearCode는 한국산업기술평가관리원(KEIT)이 주최한 **『AI 라이프 솔루션 챌린지』** 공모전을 위해 개발된 웹 애플리케이션입니다. 선정된 AI 라이프 아이디어인 "들리는 바코드"를 실제 구현하여, 시각 장애인이 일상생활에서 제품 정보를 쉽게 확인할 수 있도록 돕습니다.  
 > [Food QR API](https://data.mfds.go.kr/OPCAA01P01?srvcNm=FoodQrInfoService&callBackFn=fnPopupCallback)에 등록된 제품만 가능합니다.
 
 [배포 주소 바로가기](https://hearcode.vercel.app/)
@@ -90,7 +90,7 @@
 | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 프론트엔드       | ![Next.js](https://img.shields.io/badge/next.js-ffffff?style=for-the-badge&logo=nextdotjs&logoColor=black) ![TypeScript](https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=white) ![Tailwind CSS](https://img.shields.io/badge/tailwindcss-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white) ![React](https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=white) |
 | 상태 관리 도구   | ![Zustand](https://img.shields.io/badge/Zustand-5B4638?style=for-the-badge&logo=Zustand&logoColor=white)                                                                                                                                                                                                                                                                                                                                              |
-| 바코드 스캔      | ![HTML5-QRCode](https://img.shields.io/badge/HTML5--QRCode-000000?style=for-the-badge&logo=html5&logoColor=white) ![Quagga2](https://img.shields.io/badge/Quagga2-E95420?style=for-the-badge&logo=barcode&logoColor=white)                                                                                                                                                                                                                            |
+| 바코드 스캔      | ![HTML5-QRCode](https://img.shields.io/badge/HTML5--QRCode-E34F26?style=for-the-badge&logo=html5&logoColor=white) ![Quagga2](https://img.shields.io/badge/Quagga2-E95420?style=for-the-badge&logo=barcode&logoColor=white)                                                                                                                                                                                                                            |
 | 데이터 저장      | ![IndexedDB](https://img.shields.io/badge/IndexedDB-4285F4?style=for-the-badge&logo=javascript&logoColor=white)                                                                                                                                                                                                                                                                                                                                       |
 | AI               | ![OpenRouter](https://img.shields.io/badge/OpenRouter-000000?style=for-the-badge&logo=openrouter&logoColor=white) ![Grok 4.1 Fast](https://img.shields.io/badge/Grok%204.1%20Fast-FF6B35?style=for-the-badge&logo=xai&logoColor=white)                                                                                                                                                                                                                |
 | 패키지 매니저    | ![Bun](https://img.shields.io/badge/bun-000000?style=for-the-badge&logo=bun&logoColor=white)                                                                                                                                                                                                                                                                                                                                                          |
@@ -118,7 +118,7 @@
 
 ### 식품 영양 정보
 
-> 스캔된 바코드를 통해 food qr API에서 식품 영양 정보를 자동으로 가져옵니다. <br>
+> 스캔된 바코드를 통해 food qr API에서 식품 영양 정보를 자동으로 가져옵니다.  
 > 제품명, 제조사, 영양성분(열량, 탄수화물, 지방 등)을 한눈에 확인할 수 있으며, '저장하기' 버튼으로 히스토리에 보관할 수 있습니다.
 
 ![HearCode 식품 모달](public/gif/food.gif)
