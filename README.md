@@ -15,7 +15,7 @@
 | 팀원   | 역할       | 주요 담당             | GitHub                                       |
 | ------ | ---------- | --------------------- | -------------------------------------------- |
 | 안동원 | PM, QA, FE | 바코드 스캔           | [@dongwonAhn](https://github.com/dongwonAhn) |
-| 우혜리 | PL, QA, FE | 식품영양 api          | [@WUHYERI](https://github.com/WUHYERI)       |
+| 우혜리 | PL, QA, FE | Food QR API 연동      | [@WUHYERI](https://github.com/WUHYERI)       |
 | 석정일 | PL, QA, FE | history, AI 서버 액션 | [@but212](https://github.com/but212)         |
 
 ### 팀원별 주요 기여
