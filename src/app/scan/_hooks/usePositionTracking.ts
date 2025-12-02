@@ -29,6 +29,7 @@ export function usePositionTracking({ onPositionDetected }: UsePositionTrackingP
   const speakPositionWithCooldown = useCallback(
     (position: Position) => {
       const now = Date.now()
+
       // 쿨다운 체크
       if (now - lastVoiceTimeRef.current < VOICE_CONFIG.COOLDOWN) {
         return
@@ -90,22 +91,13 @@ export function usePositionTracking({ onPositionDetected }: UsePositionTrackingP
           result => {
             if (!result) return
 
-            let box = result.box
-            if (!box && result.boxes && result.boxes.length > 0) {
-              box = result.boxes.reduce((largest, current) => {
-                const largestArea = Math.abs(
-                  (largest[2][0] - largest[0][0]) * (largest[2][1] - largest[0][1])
-                )
-                const currentArea = Math.abs(
-                  (current[2][0] - current[0][0]) * (current[2][1] - current[0][1])
-                )
-                return currentArea > largestArea ? current : largest
-              })
-            }
+            // 실제로 디코딩된 바코드(result.box)만 사용!
+            // result.boxes는 후보 영역이므로 사용하지 않음
+            const box = result.box
 
             if (!box) return
 
-            const position = calculatePosition(box, canvas, video)
+            const position = calculatePosition(box, video)
             speakPositionWithCooldown(position)
           }
         )
@@ -121,32 +113,50 @@ export function usePositionTracking({ onPositionDetected }: UsePositionTrackingP
   }
 }
 
-function calculatePosition(
-  box: number[][],
-  canvas: HTMLCanvasElement,
-  video: HTMLVideoElement
-): Position {
+function calculatePosition(box: number[][], video: HTMLVideoElement): Position {
+  // 1. 바코드 중심점 (비디오 해상도 좌표)
   const barcodeCenterX = (box[0][0] + box[2][0]) / 2
   const barcodeCenterY = (box[0][1] + box[2][1]) / 2
 
-  const scaleX = canvas.width / video.clientWidth
-  const scaleY = canvas.height / video.clientHeight
+  // 2. 비디오 실제 해상도
+  const videoWidth = video.videoWidth
+  const videoHeight = video.videoHeight
 
-  const scaledQrboxWidth = SCANNER_CONFIG.QRBOX_WIDTH * scaleX
-  const scaledQrboxHeight = SCANNER_CONFIG.QRBOX_HEIGHT * scaleY
+  // 3. 비디오 화면 표시 크기 (CSS)
+  const displayWidth = video.clientWidth
+  const displayHeight = video.clientHeight
 
-  const screenCenterX = canvas.width / 2
-  const screenCenterY = canvas.height / 2
+  // 4. QRBox를 비디오 해상도로 변환
+  const scaleX = videoWidth / displayWidth
+  const scaleY = videoHeight / displayHeight
 
-  const qrLeft = screenCenterX - scaledQrboxWidth / 2
-  const qrRight = screenCenterX + scaledQrboxWidth / 2
-  const qrTop = screenCenterY - scaledQrboxHeight / 2
-  const qrBottom = screenCenterY + scaledQrboxHeight / 2
+  const qrboxWidthInVideo = SCANNER_CONFIG.QRBOX_WIDTH * scaleX
+  const qrboxHeightInVideo = SCANNER_CONFIG.QRBOX_HEIGHT * scaleY
 
-  if (barcodeCenterX < qrLeft) return 'left'
-  if (barcodeCenterX > qrRight) return 'right'
-  if (barcodeCenterY < qrTop) return 'up'
-  if (barcodeCenterY > qrBottom) return 'down'
+  // 5. 비디오 중심점
+  const videoCenterX = videoWidth / 2
+  const videoCenterY = videoHeight / 2
+
+  // 6. QRBox 영역 (비디오 해상도 기준)
+  const qrLeft = videoCenterX - qrboxWidthInVideo / 2
+  const qrRight = videoCenterX + qrboxWidthInVideo / 2
+  const qrTop = videoCenterY - qrboxHeightInVideo / 2
+  const qrBottom = videoCenterY + qrboxHeightInVideo / 2
+
+  // 7. 위치 판정
+  if (barcodeCenterX < qrLeft) {
+    return 'left'
+  }
+  if (barcodeCenterX > qrRight) {
+    return 'right'
+  }
+  if (barcodeCenterY < qrTop) {
+    return 'up'
+  }
+  if (barcodeCenterY > qrBottom) {
+    return 'down'
+  }
+
   return 'center'
 }
 
