@@ -1,7 +1,7 @@
 # ![HearCode](./public/svg/logo.svg)
 
-> 시각 장애인을 위한 AI 기반 음성 안내 바코드 스캐너
-> HearCode는 한국산업기술평가관리원(KEIT)이 주최한 **『AI 라이프 솔루션 챌린지』** 공모전을 위해 개발된 웹 애플리케이션입니다. 선정된 AI 라이프 아이디어인 "들리는 바코드"를 실제 구현하여, 시각 장애인이 일상생활에서 제품 정보를 쉽게 확인할 수 있도록 돕습니다.
+> 시각 장애인을 위한 AI 기반 음성 안내 바코드 스캐너  
+> HearCode는 한국산업기술평가관리원(KEIT)이 주최한 **『AI 라이프 솔루션 챌린지』** 공모전을 위해 개발된 웹 애플리케이션입니다. 선정된 AI 라이프 아이디어인 "들리는 바코드"를 실제 구현하여, 시각 장애인이 일상생활에서 제품 정보를 쉽게 확인할 수 있도록 돕습니다.  
 > [Food QR API](https://data.mfds.go.kr/OPCAA01P01?srvcNm=FoodQrInfoService&callBackFn=fnPopupCallback)에 등록된 제품만 가능합니다.
 
 [배포 주소 바로가기](https://hearcode.vercel.app/)
@@ -15,7 +15,7 @@
 | 팀원   | 역할       | 주요 담당             | GitHub                                       |
 | ------ | ---------- | --------------------- | -------------------------------------------- |
 | 안동원 | PM, QA, FE | 바코드 스캔           | [@dongwonAhn](https://github.com/dongwonAhn) |
-| 우혜리 | PL, QA, FE | 식품영양 api          | [@WUHYERI](https://github.com/WUHYERI)       |
+| 우혜리 | PL, QA, FE | Food QR API 연동      | [@WUHYERI](https://github.com/WUHYERI)       |
 | 석정일 | PL, QA, FE | history, AI 서버 액션 | [@but212](https://github.com/but212)         |
 
 ### 팀원별 주요 기여
@@ -89,14 +89,45 @@
 | 분류             | 기술                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 프론트엔드       | ![Next.js](https://img.shields.io/badge/next.js-ffffff?style=for-the-badge&logo=nextdotjs&logoColor=black) ![TypeScript](https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=white) ![Tailwind CSS](https://img.shields.io/badge/tailwindcss-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white) ![React](https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=white) |
-| 상태 관리 도구   | ![Zustand](https://img.shields.io/badge/Zustand-5B4638?style=for-the-badge&logo=Zustand&logoColor=white) ![TanStack Query](https://img.shields.io/badge/TanStack%20Query-FF4154?style=for-the-badge&logo=reactquery&logoColor=white)                                                                                                                                                                                                                  |
-| 바코드 스캔      | ![HTML5-QRCode](https://img.shields.io/badge/HTML5--QRCode-000000?style=for-the-badge&logo=html5&logoColor=white)                                                                                                                                                                                                                                                                                                                                     |
+| 상태 관리 도구   | ![Zustand](https://img.shields.io/badge/Zustand-5B4638?style=for-the-badge&logo=Zustand&logoColor=white)                                                                                                                                                                                                                                                                                                                                              |
+| 바코드 스캔      | ![HTML5-QRCode](https://img.shields.io/badge/HTML5--QRCode-E34F26?style=for-the-badge&logo=html5&logoColor=white) ![Quagga2](https://img.shields.io/badge/Quagga2-E95420?style=for-the-badge&logo=barcode&logoColor=white)                                                                                                                                                                                                                            |
 | 데이터 저장      | ![IndexedDB](https://img.shields.io/badge/IndexedDB-4285F4?style=for-the-badge&logo=javascript&logoColor=white)                                                                                                                                                                                                                                                                                                                                       |
 | AI               | ![OpenRouter](https://img.shields.io/badge/OpenRouter-000000?style=for-the-badge&logo=openrouter&logoColor=white) ![Grok 4.1 Fast](https://img.shields.io/badge/Grok%204.1%20Fast-FF6B35?style=for-the-badge&logo=xai&logoColor=white)                                                                                                                                                                                                                |
 | 패키지 매니저    | ![Bun](https://img.shields.io/badge/bun-000000?style=for-the-badge&logo=bun&logoColor=white)                                                                                                                                                                                                                                                                                                                                                          |
 | 배포             | ![Vercel](https://img.shields.io/badge/vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)                                                                                                                                                                                                                                                                                                                                                 |
 | 버전 관리 & 협업 | ![Git](https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white) ![GitHub](https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white) ![Discord](https://img.shields.io/badge/discord-5865F2?style=for-the-badge&logo=discord&logoColor=white) ![Notion](https://img.shields.io/badge/notion-ffffff?style=for-the-badge&logo=notion&logoColor=black)                                     |
 | 디자인           | ![Figma](https://img.shields.io/badge/figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)                                                                                                                                                                                                                                                                                                                                                    |
+
+---
+
+## 서비스 시연
+
+### 랜딩페이지
+
+> HearCode의 메인 화면입니다.  
+> 스캔 시작 버튼과 이전 기록 보기 메뉴를 제공합니다.
+
+![HearCode 랜딩 페이지](public/gif/landing.gif)
+
+### 바코드 스캔
+
+> 카메라를 통해 실시간으로 바코드를 인식합니다.  
+> 화면에 흰색 가이드 박스가 표시되어 바코드 위치를 쉽게 맞출 수 있으며, 음성 안내 기능을 통해 시각장애인도 정확한 스캔이 가능합니다.
+
+![HearCode 스캔 페이지](public/gif/scan.gif)
+
+### 식품 영양 정보
+
+> 스캔된 바코드를 통해 food qr API에서 식품 영양 정보를 자동으로 가져옵니다.  
+> 제품명, 제조사, 영양성분(열량, 탄수화물, 지방 등)을 한눈에 확인할 수 있으며, '저장하기' 버튼으로 히스토리에 보관할 수 있습니다.
+
+![HearCode 식품 모달](public/gif/food.gif)
+
+### 히스토리
+
+> 저장한 식품 목록을 모아볼 수 있는 페이지입니다. 이전에 스캔했던 제품들을 다시 확인하거나 삭제할 수 있습니다.
+
+![HearCode 히스트리 페이지](public/gif/history.gif)
 
 ---
 
@@ -115,13 +146,11 @@ project/
 │   │   ├── api/               # API 라우트 (푸드 QR 프록시)
 │   │   ├── history/           # 스캔 히스토리 페이지
 │   │   ├── scan/              # 바코드 스캔 페이지
-│   │   ├── ai-test/           # AI 기능 테스트 페이지
 │   │   ├── layout.tsx         # 루트 레이아웃
 │   │   ├── page.tsx           # 랜딩 페이지
 │   │   └── Provider.tsx       # Query Client Provider
 │   ├── components/            # 재사용 가능한 UI 컴포넌트
 │   │   ├── _constants/        # 컴포넌트 전용 상수
-│   │   ├── MainButton.tsx     # 메인 버튼 컴포넌트
 │   │   ├── NavigationBar.tsx  # 네비게이션 바
 │   │   ├── Popover.tsx        # 팝오버/모달 다이얼로그
 │   │   ├── Spinner.tsx        # 로딩 스피너 컴포넌트

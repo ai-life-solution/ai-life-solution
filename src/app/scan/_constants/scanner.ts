@@ -7,15 +7,15 @@ export const SCANNER_CONFIG = {
 
 // 음성 안내 설정
 export const VOICE_CONFIG = {
-  COOLDOWN: 2000,
+  COOLDOWN: 2500,
   TRACKING_INTERVAL: 200,
 } as const
 
 // 가이드 타이밍 (초)
 export const GUIDE_TIMING = {
-  MOVE_HINT: 3,
-  DISTANCE_HINT: 10,
-  TIMEOUT: 20,
+  MOVE_HINT: 5,
+  DISTANCE_HINT: 15,
+  TIMEOUT: 25,
 } as const
 
 // 위치 메시지
