@@ -122,9 +122,9 @@ export function useBarcodeScanner({
           } else if (elapsed > GUIDE_TIMING.DISTANCE_HINT) {
             speak('제품을 조금 더 가까이 또는 멀리 해보세요')
           } else if (elapsed > GUIDE_TIMING.MOVE_HINT) {
-            speak('바코드를 천천히 움직여주세요')
+            speak('천천히 움직여주세요')
           }
-        }, 3000)
+        }, 5000)
       } catch {
         speak('카메라를 시작할 수 없습니다')
       }
