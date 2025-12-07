@@ -1,5 +1,6 @@
-import Provider from '@/app/Provider'
 import '@/styles/global.css'
+import { Toaster } from 'sonner'
+
 import fonts from '@/fonts'
 import { cn } from '@/utils'
 
@@ -16,7 +17,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ko-KR">
       <body className={cn(fonts.pretendard.className)}>
         <div className="mx-auto flex flex-col items-center">
-          <Provider>{children}</Provider>
+          <Toaster />
+          {children}
         </div>
       </body>
     </html>
