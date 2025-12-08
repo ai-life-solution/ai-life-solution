@@ -53,7 +53,7 @@ export default function FoodHistoryList() {
   return (
     <ul className={STYLE.HISTORY_LIST.LIST}>
       {foods.map(item => (
-        <FoodHistoryItem key={item.order} item={item} />
+        <FoodHistoryItem key={item.key} item={item} />
       ))}
     </ul>
   )
