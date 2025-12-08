@@ -11,7 +11,8 @@ export default interface FoodData extends DBSchema {
    */
   foodsHistory: {
     /**
-     * 키 값 (스캔 순서를 의미하는 order)
+     * IndexedDB key 값
+     * - Date.now()를 사용해 생성된 고유 키입니다.
      */
     key: number
 
@@ -23,14 +24,17 @@ export default interface FoodData extends DBSchema {
     /**
      * IndexedDB 인덱스 정의입니다.
      * - 'by-productCode': productCode 필드 기준 인덱스
+     * - 'by-timestamp': timestamp 필드 기준 인덱스
      */
     indexes: {
       'by-productCode': string
+      'by-timestamp': number
     }
   }
 }
 
 /**
  * 단일 식품 히스토리 엔트리를 나타내는 타입입니다.
+ * - FoodItem 에 IndexedDB key 를 추가한 형태입니다.
  */
-export type FoodHistoryEntry = FoodItem
+export type FoodHistoryEntry = FoodItem & { key: number }

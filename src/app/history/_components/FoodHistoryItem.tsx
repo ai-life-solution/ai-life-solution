@@ -37,7 +37,7 @@ export function FoodHistoryItem(props: FoodHistoryItemProps) {
       id: 'delete',
       label: '삭제',
       onClick: () => {
-        if (item.order) removeFoodItem(item.order)
+        if (item.key) removeFoodItem(item.key)
       },
       isDanger: true,
       dangerLabel: '삭제하시겠습니까?',
@@ -46,7 +46,7 @@ export function FoodHistoryItem(props: FoodHistoryItemProps) {
 
   return (
     <li className={STYLE.HISTORY_ITEM.ITEM}>
-      <Link className={STYLE.HISTORY_ITEM.LINK} href={`/history/${props.item.order}`}>
+      <Link className={STYLE.HISTORY_ITEM.LINK} href={`/history/${props.item.key}`}>
         {item.productName}
       </Link>
       <Popover

@@ -31,12 +31,13 @@ export function preprocessFoodsHistory(entries?: FoodHistoryEntry[] | null): Foo
   const sanitized = entries.filter(
     (entry): entry is FoodHistoryEntry =>
       !!entry &&
-      typeof entry.order === 'number' &&
+      typeof entry.key === 'number' &&
+      typeof entry.timestamp === 'number' &&
       typeof entry.barcode === 'string' &&
       typeof entry.productName === 'string'
   )
 
-  const sorted = [...sanitized].sort((a, b) => (b.order ?? 0) - (a.order ?? 0))
+  const sorted = [...sanitized].sort((a, b) => (b.timestamp ?? 0) - (a.timestamp ?? 0))
 
   return sorted.slice(0, MAX_FOODS_HISTORY)
 }
@@ -56,12 +57,12 @@ async function enforceFoodsHistoryLimit(
   if (entries.length <= MAX_FOODS_HISTORY) return
 
   const limitedEntries = preprocessFoodsHistory(entries)
-  const orderWhitelist = new Set(limitedEntries.map(entry => entry.order))
+  const keyWhitelist = new Set(limitedEntries.map(entry => entry.key))
 
   await Promise.all(
     entries
-      .filter(entry => !orderWhitelist.has(entry.order))
-      .map(entry => db.delete('foodsHistory', entry.order as number))
+      .filter(entry => !keyWhitelist.has(entry.key))
+      .map(entry => db.delete('foodsHistory', entry.key as number))
   )
 }
 
@@ -72,10 +73,15 @@ async function enforceFoodsHistoryLimit(
  * @returns 초기화된 IndexedDB 인스턴스를 나타내는 Promise
  */
 export function initFoodDB(): Promise<IDBPDatabase<FoodData>> {
-  dbPromise = openDB<FoodData>('FoodData', 1, {
-    upgrade(db) {
-      const store = db.createObjectStore('foodsHistory', { keyPath: 'order' })
+  dbPromise = openDB<FoodData>('FoodData', 2, {
+    upgrade(db, oldVersion) {
+      if (oldVersion > 0 && db.objectStoreNames.contains('foodsHistory')) {
+        db.deleteObjectStore('foodsHistory')
+      }
+
+      const store = db.createObjectStore('foodsHistory', { keyPath: 'key' })
       store.createIndex('by-productCode', 'productCode')
+      store.createIndex('by-timestamp', 'timestamp')
     },
   })
   return dbPromise
@@ -94,14 +100,14 @@ export async function addFoodsHistory(food: FoodHistoryEntry): Promise<void> {
 }
 
 /**
- * order 값으로 특정 음식 히스토리 엔트리를 조회합니다.
+ * key 값으로 특정 음식 히스토리 엔트리를 조회합니다.
  *
- * @param order - 조회할 음식 히스토리의 order 값
+ * @param key - 조회할 음식 히스토리의 key 값
  * @returns 조회된 음식 히스토리 엔트리 또는 존재하지 않으면 undefined
  */
-export async function getFoodHistoryByOrder(order: number): Promise<FoodHistoryEntry | undefined> {
+export async function getFoodHistoryByKey(key: number): Promise<FoodHistoryEntry | undefined> {
   const db = await ensureFoodDB()
-  return db.get('foodsHistory', order)
+  return db.get('foodsHistory', key)
 }
 
 /**
@@ -118,12 +124,12 @@ export async function getAllFoodsHistory(): Promise<FoodHistoryEntry[]> {
 }
 
 /**
- * order 값으로 특정 음식 히스토리 엔트리를 삭제합니다.
+ * key 값으로 특정 음식 히스토리 엔트리를 삭제합니다.
  *
- * @param order - 삭제할 음식 히스토리의 order 값
+ * @param key - 삭제할 음식 히스토리의 key 값
  * @returns 삭제 작업이 완료되면 resolve되는 Promise
  */
-export async function deleteFoodsHistory(order: number): Promise<void> {
+export async function deleteFoodsHistory(key: number): Promise<void> {
   const db = await ensureFoodDB()
-  await db.delete('foodsHistory', order)
+  await db.delete('foodsHistory', key)
 }

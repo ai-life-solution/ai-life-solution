@@ -21,7 +21,7 @@ import NutritionSection from './NutritionSection'
 import WeightSection from './WeightSection'
 
 interface HistoryInfoContainerProps {
-  order: number
+  keyId: number
 }
 
 /**
@@ -35,7 +35,7 @@ interface HistoryInfoContainerProps {
  * @param props.order - 조회할 식품의 주문번호
  * @returns 식품 상세정보를 나타내는 JSX 요소
  */
-export default function HistoryInfoContainer({ order }: HistoryInfoContainerProps) {
+export default function HistoryInfoContainer({ keyId }: HistoryInfoContainerProps) {
   const { speak, isSpeaking, stopSpeak } = useTTSStore()
   const { foods, isLoading, isInitialized, lastError, loadFoods } = useFoodStore(
     useShallow(state => ({
@@ -54,7 +54,7 @@ export default function HistoryInfoContainer({ order }: HistoryInfoContainerProp
     })
   }, [isInitialized, loadFoods])
 
-  const data = foods.find(item => item.order === order)
+  const data = foods.find(item => item.key === keyId)
 
   /**
    * 식품 정보를 음성으로 재생하거나 중지하는 함수
