@@ -71,7 +71,7 @@ export async function chatCompletion(payload: ChatCompletionPayload) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'x-ai/grok-4.1-fast',
+        model: 'inception/mercury-2',
         messages: payload.messages,
         reasoning: payload.reasoning,
       }),

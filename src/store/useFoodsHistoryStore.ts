@@ -9,7 +9,7 @@ import {
   addFoodsHistory,
   getAllFoodsHistory,
   deleteFoodsHistory,
-  getFoodHistoryByOrder,
+  getFoodHistoryByKey,
   preprocessFoodsHistory,
 } from '@/db/foodsHistory'
 import type { FoodHistoryEntry } from '@/types/FoodData'
@@ -47,13 +47,13 @@ interface FoodState {
   addFoodsHistoryItem: (food: FoodHistoryEntry) => Promise<void>
 
   /**
-   * 주어진 order 를 가진 음식 히스토리 항목을 삭제합니다.
+   * 주어진 key 를 가진 음식 히스토리 항목을 삭제합니다.
    * IndexedDB와 Zustand 스토어에서 모두 삭제됩니다.
    *
-   * @param order - 삭제할 음식 히스토리의 order 값
+   * @param key - 삭제할 음식 히스토리의 key 값
    * @returns 비동기 작업을 나타내는 Promise
    */
-  removeFoodItem: (order: number) => Promise<void>
+  removeFoodItem: (key: number) => Promise<void>
 
   /**
    * IndexedDB 에 저장된 모든 음식 히스토리를 조회하여
@@ -64,21 +64,21 @@ interface FoodState {
   loadFoods: () => Promise<void>
 
   /**
-   * 주어진 order 에 해당하는 단일 음식 히스토리 항목을 조회합니다.
+   * 주어진 key 에 해당하는 단일 음식 히스토리 항목을 조회합니다.
    *
-   * @param order - 조회할 음식 히스토리의 order 값
+   * @param key - 조회할 음식 히스토리의 key 값
    * @returns 조회된 FoodHistoryEntry 또는 존재하지 않을 경우 undefined를 담은 Promise
    */
-  getFoodItemByOrder: (order: number) => Promise<FoodHistoryEntry | undefined>
+  getFoodItemByKey: (key: number) => Promise<FoodHistoryEntry | undefined>
 
   /**
-   * 주어진 order 에 해당하는 음식 히스토리 항목을 업데이트합니다.
+   * 주어진 key 에 해당하는 음식 히스토리 항목을 업데이트합니다.
    *
-   * @param order - 업데이트할 음식 히스토리의 order 값
+   * @param key - 업데이트할 음식 히스토리의 key 값
    * @param updates - 업데이트할 필드들
    * @returns 비동기 작업을 나타내는 Promise
    */
-  updateFoodItem: (order: number, updates: Partial<FoodHistoryEntry>) => Promise<void>
+  updateFoodItem: (key: number, updates: Partial<FoodHistoryEntry>) => Promise<void>
 }
 
 /**
@@ -99,9 +99,9 @@ export const useFoodStore = create<FoodState>()(
         set({ foods: preprocessFoodsHistory([...get().foods, food]) })
       },
 
-      async removeFoodItem(order) {
-        await deleteFoodsHistory(order)
-        set({ foods: get().foods.filter(f => f.order !== order) })
+      async removeFoodItem(key) {
+        await deleteFoodsHistory(key)
+        set({ foods: get().foods.filter(f => f.key !== key) })
       },
 
       async loadFoods() {
@@ -123,18 +123,18 @@ export const useFoodStore = create<FoodState>()(
         }
       },
 
-      async getFoodItemByOrder(order) {
-        return getFoodHistoryByOrder(order)
+      async getFoodItemByKey(key) {
+        return getFoodHistoryByKey(key)
       },
 
-      async updateFoodItem(order, updates) {
-        const existing = await getFoodHistoryByOrder(order)
+      async updateFoodItem(key, updates) {
+        const existing = await getFoodHistoryByKey(key)
         if (!existing) {
-          throw new Error(`order ${order}에 해당하는 항목을 찾을 수 없습니다.`)
+          throw new Error(`key ${key}에 해당하는 항목을 찾을 수 없습니다.`)
         }
         const updated = { ...existing, ...updates }
         await addFoodsHistory(updated)
-        set({ foods: get().foods.map(f => (f.order === order ? updated : f)) })
+        set({ foods: get().foods.map(f => (f.key === key ? updated : f)) })
       },
     }),
     {
