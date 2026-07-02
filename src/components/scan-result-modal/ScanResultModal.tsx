@@ -27,7 +27,7 @@ interface ScanResultModalProps {
 
 export default function ScanResultModal({ open, onClose }: ScanResultModalProps) {
   const { data, status } = useScanResultStore()
-  const { foods, addFoodsHistoryItem } = useFoodStore()
+  const { addFoodsHistoryItem } = useFoodStore()
   const { speak, isSpeaking, stopSpeak } = useTTSStore()
   const [currentSlide, setCurrentSlide] = useState(0)
   if (!open) return null
@@ -42,12 +42,11 @@ export default function ScanResultModal({ open, onClose }: ScanResultModalProps)
 
   const handleSave = async () => {
     if (!data || isUnregistered) return
-    const lastOrder = foods[0]?.order ?? 0
+    const now = Date.now()
 
     const newEntry = {
       ...data,
-      order: lastOrder + 1,
-      createAt: Date.now(),
+      key: now,
     }
 
     try {
