@@ -12,9 +12,18 @@ import type {
 import { parseHtml } from './parseHtml'
 
 function transfromStandardInfo(productInfoRes: FoodQrResponse<RawStandardInfo>) {
-  const items = Array.isArray(productInfoRes.response.body.items.item)
-    ? (productInfoRes.response.body.items.item as RawStandardInfo[])
-    : [productInfoRes.response.body.items.item]
+  const rawItem = productInfoRes.response.body.items?.item
+  if (!rawItem) {
+    return {
+      barcode: '',
+      productName: '',
+      weight: '',
+      category: undefined,
+    }
+  }
+  const items = Array.isArray(rawItem)
+    ? (rawItem as RawStandardInfo[])
+    : [rawItem]
   const standardInfoArray = items.map(i => ({
     barcode: i.brcdNo,
     productName: i.prdctNm,
@@ -26,7 +35,8 @@ function transfromStandardInfo(productInfoRes: FoodQrResponse<RawStandardInfo>) 
 }
 
 function transformIngredients(ingredientRes: FoodQrResponse<Ingredient>): string[] {
-  const items = ingredientRes.response.body.items.item
+  const items = ingredientRes.response.body.items?.item
+  if (!items) return []
 
   // 배열이면 첫 번째 요소 선택
   const item = Array.isArray(items) ? items[0] : items
@@ -36,9 +46,11 @@ function transformIngredients(ingredientRes: FoodQrResponse<Ingredient>): string
 }
 
 function transformNutritions(nutritionRes: FoodQrResponse<RawNutrition>): FoodNutrient[] {
-  const items = Array.isArray(nutritionRes.response.body.items.item)
-    ? (nutritionRes.response.body.items.item as RawNutrition[])
-    : [nutritionRes.response.body.items.item]
+  const rawItem = nutritionRes.response.body.items?.item
+  if (!rawItem) return []
+  const items = Array.isArray(rawItem)
+    ? (rawItem as RawNutrition[])
+    : [rawItem]
   const AllNutritions = items.map(i => ({
     name: i.nirwmtNm,
     amount: i.cta,
@@ -55,9 +67,11 @@ function transformNutritions(nutritionRes: FoodQrResponse<RawNutrition>): FoodNu
 }
 
 function transformAllergens(allergyRes: FoodQrResponse<Allergen>): string[] {
-  const itmes = Array.isArray(allergyRes.response.body.items.item)
-    ? (allergyRes.response.body.items.item as Allergen[])
-    : [allergyRes.response.body.items.item]
+  const rawItem = allergyRes.response.body.items?.item
+  if (!rawItem) return []
+  const itmes = Array.isArray(rawItem)
+    ? (rawItem as Allergen[])
+    : [rawItem]
 
   const AllAllergens = itmes.map(i => i.algCsgMtrNm)
   const allergens = [...new Set(AllAllergens)]
@@ -65,9 +79,11 @@ function transformAllergens(allergyRes: FoodQrResponse<Allergen>): string[] {
 }
 
 function transformCertifications(certRes: FoodQrResponse<Certification>): Certification[] {
-  const items = Array.isArray(certRes.response.body.items.item)
-    ? (certRes.response.body.items.item as Certification[])
-    : [certRes.response.body.items.item as Certification]
+  const rawItem = certRes.response.body.items?.item
+  if (!rawItem) return []
+  const items = Array.isArray(rawItem)
+    ? (rawItem as Certification[])
+    : [rawItem as Certification]
 
   const AllCertifications = items.filter(c => c.certYn === 'Y')
   const certifications = new Map<string, Certification>()
@@ -121,7 +137,7 @@ export default function transformResData({
   const allergens = transformAllergens(allergyRes)
   const certifications = transformCertifications(certRes)
   const nutritions = transformNutritions(nutritionRes)
-  const manufacturer = certifications[0].bsshNm
+  const manufacturer = certifications[0]?.bsshNm
   const tags = transformTags(barcode, productName, category, manufacturer)
 
   return {

@@ -32,15 +32,20 @@ export default function ScanResultSlide({ data, currentSlide, setCurrentSlide }:
 
   const handleTouchStart = (e: TouchEvent) => {
     setTouchStart(e.targetTouches[0].clientX)
+    setTouchEnd(0)
   }
   const handleTouchMove = (e: TouchEvent) => {
     setTouchEnd(e.targetTouches[0].clientX)
   }
   const handleTouchEnd = () => {
-    if (!touchStart || !touchEnd || !setCurrentSlide) return
+    if (!touchStart || !touchEnd || !setCurrentSlide) {
+      setTouchStart(0)
+      setTouchEnd(0)
+      return
+    }
 
     const distance = touchStart - touchEnd
-    const minSwipeDistance = 5
+    const minSwipeDistance = 30
 
     // 왼쪽으로 스와이프 → 다음 슬라이드 등장(direction = 'right')
     if (distance > minSwipeDistance) {

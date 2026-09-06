@@ -1,7 +1,5 @@
 'use server'
 
-import { toast } from 'sonner'
-
 import type { FoodItem } from '@/types/FoodItem'
 
 /**
@@ -87,7 +85,7 @@ export async function chatCompletion(payload: ChatCompletionPayload) {
     const result = await response.json()
     return result
   } catch (error) {
-    toast.error(`서버 액션 오류:, ${error}`)
+    console.error('서버 액션 오류:', error)
     throw error
   }
 }
