@@ -12,7 +12,9 @@ export default function OtherInfo({ data }: Props) {
       <p className="font-bold text-xl">인증 정보</p>
       {data.certifications.map((cert, i) => (
         <div key={i} className="flex gap-3 items-center text-xl">
-          <Image src={cert.certIng ?? ''} width={50} height={50} alt={cert.certNm} />
+          {cert.certIng ? (
+            <Image src={cert.certIng} width={50} height={50} alt={cert.certNm} />
+          ) : null}
           <span>{cert.certNm}</span>
         </div>
       ))}

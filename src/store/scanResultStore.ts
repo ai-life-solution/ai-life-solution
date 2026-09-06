@@ -24,6 +24,8 @@ function isFoodItem(obj: unknown): obj is FoodItem {
   return false
 }
 
+let currentScanId = 0
+
 export const useScanResultStore = create<ScanResultStore>()(
   persist(
     set => ({
@@ -34,9 +36,12 @@ export const useScanResultStore = create<ScanResultStore>()(
        * 바코드를 받아 상품 정보를 조회하는 비동기 액션
        */
       scan: async (barcode: string) => {
+        const scanId = ++currentScanId
         set({ status: 'loading', data: null })
         try {
           const scanResult = await getFoodItem(barcode)
+          if (scanId !== currentScanId) return
+
           set({ data: scanResult, status: 'success' })
 
           // scanResult가 단순 { barcode } 객체이면 요약 건너뛰기
@@ -46,18 +51,31 @@ export const useScanResultStore = create<ScanResultStore>()(
 
           // FoodItem이면 요약 진행
           const description = await addSummary(scanResult)
+          if (scanId !== currentScanId) return
+
           if (description) {
-            set(state => ({
-              ...state,
-              data: {
-                ...(state.data as FoodItem),
-                description,
-              },
-              status: 'success',
-            }))
+            set(state => {
+              if (
+                !state.data ||
+                !('barcode' in state.data) ||
+                state.data.barcode !== scanResult.barcode
+              ) {
+                return state
+              }
+              return {
+                ...state,
+                data: {
+                  ...state.data,
+                  description,
+                } as FoodItem,
+                status: 'success',
+              }
+            })
           }
         } catch {
-          set({ status: 'error', data: null })
+          if (scanId === currentScanId) {
+            set({ status: 'error', data: null })
+          }
         }
       },
     }),

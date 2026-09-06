@@ -8,7 +8,7 @@ export const SCANNER_CONFIG = {
 // 음성 안내 설정
 export const VOICE_CONFIG = {
   COOLDOWN: 2500,
-  TRACKING_INTERVAL: 200,
+  TRACKING_INTERVAL: 600,
 } as const
 
 // 가이드 타이밍 (초)
