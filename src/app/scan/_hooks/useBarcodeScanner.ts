@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef } from 'react'
 import { Html5Qrcode } from 'html5-qrcode'
 
 import { useTTSStore } from '@/store/ttsStore'
+import { normalizeBarcode } from '@/utils/barcodeNormalizer'
 
 import { GUIDE_TIMING, SCANNER_CONFIG } from '../_constants/scanner'
 
@@ -104,7 +105,7 @@ export function useBarcodeScanner({
             speak('바코드를 찾았습니다!')
             vibrate([200, 100, 200])
             void scanner.stop()
-            onScanSuccess(`0${decodedText}`)
+            onScanSuccess(normalizeBarcode(decodedText))
           },
           () => {
             // 스캔 실패 시 무시

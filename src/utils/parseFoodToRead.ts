@@ -43,8 +43,8 @@ export default function parseFoodToRead(food: ParseFoodToReadParams): string {
     parts.push(`AI 요약 ${food.description}`)
   }
 
-  if (food.certifications && food.certifications) {
-    parts.push(`인증내역 ${food.certifications.map(cert => cert.certNm)}`)
+  if (food.certifications && food.certifications.length > 0) {
+    parts.push(`인증내역 ${food.certifications.map(cert => cert.certNm).join(', ')}`)
   }
 
   return parts.join('\n').trim()

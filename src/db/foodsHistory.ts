@@ -74,14 +74,20 @@ async function enforceFoodsHistoryLimit(
  */
 export function initFoodDB(): Promise<IDBPDatabase<FoodData>> {
   dbPromise = openDB<FoodData>('FoodData', 2, {
-    upgrade(db, oldVersion) {
-      if (oldVersion > 0 && db.objectStoreNames.contains('foodsHistory')) {
-        db.deleteObjectStore('foodsHistory')
-      }
+    upgrade(db, _oldVersion, _newVersion, transaction) {
+      const store = db.objectStoreNames.contains('foodsHistory')
+        ? transaction.objectStore('foodsHistory')
+        : db.createObjectStore('foodsHistory', { keyPath: 'key' })
 
-      const store = db.createObjectStore('foodsHistory', { keyPath: 'key' })
-      store.createIndex('by-productCode', 'productCode')
-      store.createIndex('by-timestamp', 'timestamp')
+      if ((store.indexNames as unknown as DOMStringList).contains('by-productCode')) {
+        ;(store as unknown as { deleteIndex: (name: string) => void }).deleteIndex('by-productCode')
+      }
+      if (!store.indexNames.contains('by-barcode')) {
+        store.createIndex('by-barcode', 'barcode')
+      }
+      if (!store.indexNames.contains('by-timestamp')) {
+        store.createIndex('by-timestamp', 'timestamp')
+      }
     },
   })
   return dbPromise

@@ -18,14 +18,29 @@ import { requestFoodQrApi } from '@/libs/api/food-qr.server'
  * - 200: { ...ExternalApiResponse } (외부 API가 반환하는 JSON 데이터 그대로 반환)
  * - 500: { error: string } (프록시 요청 실패 시)
  */
+export const ALLOWED_SERVICE_PATHS = new Set([
+  '/qr1003/F003',
+  '/qr1007/F007',
+  '/qr1008/F008',
+  '/qr1009/F009',
+  '/qr1016/F016',
+])
+
+export function isValidServicePath(path: string): boolean {
+  return ALLOWED_SERVICE_PATHS.has(path)
+}
+
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
   const barcode = searchParams.get('barcode')
-
   const servicePath = searchParams.get('path')
 
   if (!barcode || !servicePath) {
-    return NextResponse.json({ error: 'barcode required' }, { status: 400 })
+    return NextResponse.json({ error: 'barcode and path are required' }, { status: 400 })
+  }
+
+  if (!isValidServicePath(servicePath)) {
+    return NextResponse.json({ error: 'Unauthorized service path' }, { status: 400 })
   }
 
   try {
