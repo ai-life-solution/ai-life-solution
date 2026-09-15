@@ -21,9 +21,7 @@ function transfromStandardInfo(productInfoRes: FoodQrResponse<RawStandardInfo>) 
       category: undefined,
     }
   }
-  const items = Array.isArray(rawItem)
-    ? (rawItem as RawStandardInfo[])
-    : [rawItem]
+  const items = Array.isArray(rawItem) ? (rawItem as RawStandardInfo[]) : [rawItem]
   const standardInfoArray = items.map(i => ({
     barcode: i.brcdNo,
     productName: i.prdctNm,
@@ -48,9 +46,7 @@ function transformIngredients(ingredientRes: FoodQrResponse<Ingredient>): string
 function transformNutritions(nutritionRes: FoodQrResponse<RawNutrition>): FoodNutrient[] {
   const rawItem = nutritionRes.response.body.items?.item
   if (!rawItem) return []
-  const items = Array.isArray(rawItem)
-    ? (rawItem as RawNutrition[])
-    : [rawItem]
+  const items = Array.isArray(rawItem) ? (rawItem as RawNutrition[]) : [rawItem]
   const AllNutritions = items.map(i => ({
     name: i.nirwmtNm,
     amount: i.cta,
@@ -69,9 +65,7 @@ function transformNutritions(nutritionRes: FoodQrResponse<RawNutrition>): FoodNu
 function transformAllergens(allergyRes: FoodQrResponse<Allergen>): string[] {
   const rawItem = allergyRes.response.body.items?.item
   if (!rawItem) return []
-  const itmes = Array.isArray(rawItem)
-    ? (rawItem as Allergen[])
-    : [rawItem]
+  const itmes = Array.isArray(rawItem) ? (rawItem as Allergen[]) : [rawItem]
 
   const AllAllergens = itmes.map(i => i.algCsgMtrNm)
   const allergens = [...new Set(AllAllergens)]
@@ -81,9 +75,7 @@ function transformAllergens(allergyRes: FoodQrResponse<Allergen>): string[] {
 function transformCertifications(certRes: FoodQrResponse<Certification>): Certification[] {
   const rawItem = certRes.response.body.items?.item
   if (!rawItem) return []
-  const items = Array.isArray(rawItem)
-    ? (rawItem as Certification[])
-    : [rawItem as Certification]
+  const items = Array.isArray(rawItem) ? (rawItem as Certification[]) : [rawItem as Certification]
 
   const AllCertifications = items.filter(c => c.certYn === 'Y')
   const certifications = new Map<string, Certification>()

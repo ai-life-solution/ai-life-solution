@@ -65,9 +65,7 @@ describe('transformResData', () => {
         header: { resultCode: '00', resultMsg: 'NORMAL_SERVICE' },
         body: {
           items: {
-            item: [
-              { nirwmtNm: '나트륨', cta: 100, igrdUcd: 'mg', ntrtnRt: 5 },
-            ],
+            item: [{ nirwmtNm: '나트륨', cta: 100, igrdUcd: 'mg', ntrtnRt: 5 }],
           },
           numOfRows: 20,
           pageNo: 1,
