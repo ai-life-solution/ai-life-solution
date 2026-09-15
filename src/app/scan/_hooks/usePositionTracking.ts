@@ -15,11 +15,16 @@ interface UsePositionTrackingProps {
 
 export function usePositionTracking({ onPositionDetected }: UsePositionTrackingProps) {
   const positionTrackingRef = useRef<NodeJS.Timeout | null>(null)
+  const startTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const lastVoiceTimeRef = useRef<number>(0)
   const lastPositionRef = useRef<Position | null>(null)
 
   const clearPositionTracking = useCallback(() => {
+    if (startTimeoutRef.current) {
+      clearTimeout(startTimeoutRef.current)
+      startTimeoutRef.current = null
+    }
     if (positionTrackingRef.current) {
       clearInterval(positionTrackingRef.current)
       positionTrackingRef.current = null
@@ -52,7 +57,7 @@ export function usePositionTracking({ onPositionDetected }: UsePositionTrackingP
       const video = document.querySelector('#barcode-reader video') as HTMLVideoElement | null
 
       if (!video || video.readyState !== 4) {
-        setTimeout(tryStartTracking, 300)
+        startTimeoutRef.current = setTimeout(tryStartTracking, 300)
         return
       }
 
@@ -104,7 +109,7 @@ export function usePositionTracking({ onPositionDetected }: UsePositionTrackingP
       }, VOICE_CONFIG.TRACKING_INTERVAL)
     }
 
-    setTimeout(tryStartTracking, 1000)
+    startTimeoutRef.current = setTimeout(tryStartTracking, 1000)
   }, [speakPositionWithCooldown])
 
   return {

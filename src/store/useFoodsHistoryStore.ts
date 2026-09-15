@@ -2,14 +2,12 @@
 
 import { toast } from 'sonner'
 import { create } from 'zustand'
-import { persist, createJSONStorage } from 'zustand/middleware'
 
 import {
   initFoodDB,
   addFoodsHistory,
   getAllFoodsHistory,
   deleteFoodsHistory,
-  getFoodHistoryByKey,
   preprocessFoodsHistory,
 } from '@/db/foodsHistory'
 import type { FoodHistoryEntry } from '@/types/FoodData'
@@ -62,91 +60,76 @@ interface FoodState {
    * @returns 비동기 작업을 나타내는 Promise
    */
   loadFoods: () => Promise<void>
+}
 
-  /**
-   * 주어진 key 에 해당하는 단일 음식 히스토리 항목을 조회합니다.
-   *
-   * @param key - 조회할 음식 히스토리의 key 값
-   * @returns 조회된 FoodHistoryEntry 또는 존재하지 않을 경우 undefined를 담은 Promise
-   */
-  getFoodItemByKey: (key: number) => Promise<FoodHistoryEntry | undefined>
-
-  /**
-   * 주어진 key 에 해당하는 음식 히스토리 항목을 업데이트합니다.
-   *
-   * @param key - 업데이트할 음식 히스토리의 key 값
-   * @param updates - 업데이트할 필드들
-   * @returns 비동기 작업을 나타내는 Promise
-   */
-  updateFoodItem: (key: number, updates: Partial<FoodHistoryEntry>) => Promise<void>
+/**
+ * 기존 localStorage(food-history-storage) 데이터를 IndexedDB로 최초 1회 마이그레이션합니다.
+ */
+async function migrateFromLocalStorageIfNeeded(): Promise<FoodHistoryEntry[]> {
+  if (typeof window === 'undefined') return []
+  try {
+    const raw = localStorage.getItem('food-history-storage')
+    if (!raw) return []
+    const parsed = JSON.parse(raw)
+    const legacyFoods = parsed?.state?.foods as FoodHistoryEntry[] | undefined
+    if (Array.isArray(legacyFoods) && legacyFoods.length > 0) {
+      for (const food of legacyFoods) {
+        await addFoodsHistory(food)
+      }
+      localStorage.removeItem('food-history-storage')
+      return legacyFoods
+    }
+  } catch (err) {
+    console.warn('Failed to migrate legacy localStorage history:', err)
+  }
+  return []
 }
 
 /**
  * 음식 히스토리를 관리하는 Zustand 스토어입니다.
- * - IndexedDB(`foodsHistory` 스토어)와 연동되어 데이터 영속성을 보장합니다.
- * - Zustand persist 미들웨어를 사용해 메모리 상태를 localStorage 에도 저장합니다.
+ * - IndexedDB(`foodsHistory` 스토어)를 단일 신뢰 원천(SSOT)으로 사용합니다.
  */
-export const useFoodStore = create<FoodState>()(
-  persist(
-    (set, get) => ({
-      foods: [],
-      isLoading: false,
-      isInitialized: false,
-      lastError: undefined,
+export const useFoodStore = create<FoodState>()((set, get) => ({
+  foods: [],
+  isLoading: false,
+  isInitialized: false,
+  lastError: undefined,
 
-      async addFoodsHistoryItem(food) {
-        await addFoodsHistory(food)
-        set({ foods: preprocessFoodsHistory([...get().foods, food]) })
-      },
+  async addFoodsHistoryItem(food) {
+    await addFoodsHistory(food)
+    set({ foods: preprocessFoodsHistory([...get().foods, food]) })
+  },
 
-      async removeFoodItem(key) {
-        await deleteFoodsHistory(key)
-        set({ foods: get().foods.filter(f => f.key !== key) })
-      },
+  async removeFoodItem(key) {
+    await deleteFoodsHistory(key)
+    set({ foods: get().foods.filter(f => f.key !== key) })
+  },
 
-      async loadFoods() {
-        if (get().isLoading) return
+  async loadFoods() {
+    if (get().isLoading) return
 
-        set({ isLoading: true, lastError: undefined })
+    set({ isLoading: true, lastError: undefined })
 
-        try {
-          const allFoods = await getAllFoodsHistory()
-          set({ foods: preprocessFoodsHistory(allFoods) })
-        } catch (error) {
-          const message =
-            error instanceof Error ? error.message : 'Unknown error while loading foods history'
-          set({ lastError: message })
-          toast.error(`Failed to load foods history: ${message}`)
-          throw error
-        } finally {
-          set({ isLoading: false, isInitialized: true })
+    try {
+      let allFoods = await getAllFoodsHistory()
+      if (allFoods.length === 0) {
+        const migrated = await migrateFromLocalStorageIfNeeded()
+        if (migrated.length > 0) {
+          allFoods = await getAllFoodsHistory()
         }
-      },
-
-      async getFoodItemByKey(key) {
-        return getFoodHistoryByKey(key)
-      },
-
-      async updateFoodItem(key, updates) {
-        const existing = await getFoodHistoryByKey(key)
-        if (!existing) {
-          throw new Error(`key ${key}에 해당하는 항목을 찾을 수 없습니다.`)
-        }
-        const updated = { ...existing, ...updates }
-        await addFoodsHistory(updated)
-        set({ foods: get().foods.map(f => (f.key === key ? updated : f)) })
-      },
-    }),
-    {
-      name: 'food-history-storage',
-      /**
-       * Zustand 상태를 localStorage 에 저장합니다.
-       * IndexedDB 에 저장되는 실제 데이터와는 별도의 스냅샷 상태입니다.
-       */
-      storage: createJSONStorage(() => localStorage),
+      }
+      set({ foods: preprocessFoodsHistory(allFoods) })
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Unknown error while loading foods history'
+      set({ lastError: message })
+      toast.error(`Failed to load foods history: ${message}`)
+      throw error
+    } finally {
+      set({ isLoading: false, isInitialized: true })
     }
-  )
-)
+  },
+}))
 
 /**
  * FoodData용 IndexedDB를 초기화합니다.

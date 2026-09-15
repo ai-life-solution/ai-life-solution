@@ -27,7 +27,7 @@ export default interface FoodData extends DBSchema {
      * - 'by-timestamp': timestamp 필드 기준 인덱스
      */
     indexes: {
-      'by-productCode': string
+      'by-barcode': string
       'by-timestamp': number
     }
   }
