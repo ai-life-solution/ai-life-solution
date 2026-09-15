@@ -69,7 +69,7 @@ export async function chatCompletion(payload: ChatCompletionPayload) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'inception/mercury-2',
+        model: 'inception/mercury-2.5',
         messages: payload.messages,
         reasoning: payload.reasoning,
       }),
@@ -109,10 +109,8 @@ export async function summarizeFoodItem(foodItem: FoodItem): Promise<string> {
     messages: [
       {
         role: 'system',
-        content: `당신은 식품 정보 요약 전문가입니다.
-          주어진 식품 데이터를 일반 소비자가 이해하기 쉽게 200자 이내로 요약해주세요.
-          제품명, 주요 영양정보, 알레르기 정보를 포함해주세요.
-          사람들이 이해하기 쉽게 뭐가 어떻게 왜 좋고 안좋은지 문어체로 설명해주세요`,
+        content:
+          '식품 정보 요약 전문가. 주어진 식품 데이터에서 제품명, 주요 영양정보, 알레르기 유발물질, 건강상 장단점을 일반 소비자가 이해하기 쉽게 문어체로 200자 이내 요약할 것.',
       },
       {
         role: 'user',
