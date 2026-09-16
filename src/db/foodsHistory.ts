@@ -2,10 +2,9 @@
 
 import { openDB, type IDBPDatabase } from 'idb'
 
+import { computeEvictionKeys, sanitizeAndSortHistory } from '@/core/history/historyPolicy'
 import type FoodData from '@/types/FoodData'
 import type { FoodHistoryEntry } from '@/types/FoodData'
-
-export const MAX_FOODS_HISTORY = 200
 
 let dbPromise: Promise<IDBPDatabase<FoodData>> | undefined
 
@@ -20,30 +19,8 @@ function ensureFoodDB(): Promise<IDBPDatabase<FoodData>> {
 }
 
 /**
- * 음식 히스토리 엔트리 배열을 정제 및 정렬하고 최대 개수 제한을 적용합니다.
- *
- * @param entries - 정제 및 정렬할 음식 히스토리 엔트리 배열
- * @returns 정제 및 정렬된 음식 히스토리 엔트리 배열
- */
-export function preprocessFoodsHistory(entries?: FoodHistoryEntry[] | null): FoodHistoryEntry[] {
-  if (!entries?.length) return []
-
-  const sanitized = entries.filter(
-    (entry): entry is FoodHistoryEntry =>
-      !!entry &&
-      typeof entry.key === 'number' &&
-      typeof entry.timestamp === 'number' &&
-      typeof entry.barcode === 'string' &&
-      typeof entry.productName === 'string'
-  )
-
-  const sorted = [...sanitized].sort((a, b) => (b.timestamp ?? 0) - (a.timestamp ?? 0))
-
-  return sorted.slice(0, MAX_FOODS_HISTORY)
-}
-
-/**
  * IndexedDB에 저장된 음식 히스토리 개수가 최대 개수를 넘지 않도록 오래된 항목을 삭제합니다.
+ * (Imperative Shell: Core의 computeEvictionKeys 결과를 바탕으로 DB I/O 실행)
  *
  * @param db - FoodData용 IndexedDB 인스턴스
  * @param cachedEntries - 선택 사항으로, 이미 로드된 음식 히스토리 엔트리 배열
@@ -53,17 +30,11 @@ async function enforceFoodsHistoryLimit(
   cachedEntries?: FoodHistoryEntry[]
 ): Promise<void> {
   const entries = cachedEntries ?? (await db.getAll('foodsHistory'))
+  const evictionKeys = computeEvictionKeys(entries)
 
-  if (entries.length <= MAX_FOODS_HISTORY) return
+  if (evictionKeys.length === 0) return
 
-  const limitedEntries = preprocessFoodsHistory(entries)
-  const keyWhitelist = new Set(limitedEntries.map(entry => entry.key))
-
-  await Promise.all(
-    entries
-      .filter(entry => !keyWhitelist.has(entry.key))
-      .map(entry => db.delete('foodsHistory', entry.key as number))
-  )
+  await Promise.all(evictionKeys.map(key => db.delete('foodsHistory', key)))
 }
 
 /**
@@ -126,7 +97,7 @@ export async function getAllFoodsHistory(): Promise<FoodHistoryEntry[]> {
   const db = await ensureFoodDB()
   const allFoods = await db.getAll('foodsHistory')
   await enforceFoodsHistoryLimit(db, allFoods)
-  return preprocessFoodsHistory(allFoods)
+  return sanitizeAndSortHistory(allFoods)
 }
 
 /**
