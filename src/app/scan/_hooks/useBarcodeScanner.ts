@@ -2,12 +2,15 @@ import { useCallback, useEffect, useRef } from 'react'
 
 import { Html5Qrcode } from 'html5-qrcode'
 
+import { getPositionMessage } from '@/core/scanner/positionCalculator'
+import { resolveScanGuidePrompt } from '@/core/scanner/scannerPolicy'
+import type { Position } from '@/core/scanner/types'
 import { useTTSStore } from '@/store/ttsStore'
 import { normalizeBarcode } from '@/utils/barcodeNormalizer'
 
 import { GUIDE_TIMING, SCANNER_CONFIG } from '../_constants/scanner'
 
-import { getPositionMessage, usePositionTracking } from './usePositionTracking'
+import { usePositionTracking } from './usePositionTracking'
 import { useVibrate } from './useVibrate'
 
 import type { FacingMode } from '../_constants/scanner'
@@ -31,9 +34,9 @@ export function useBarcodeScanner({
   const { vibrate } = useVibrate()
 
   const handlePositionDetected = useCallback(
-    (position: string) => {
+    (position: Position) => {
       stopSpeak()
-      speak(getPositionMessage(position as 'left' | 'right' | 'up' | 'down' | 'center'))
+      speak(getPositionMessage(position))
       vibrate(100)
     },
     [speak, stopSpeak, vibrate]
@@ -116,14 +119,18 @@ export function useBarcodeScanner({
 
         guideIntervalRef.current = setInterval(() => {
           const elapsed = (Date.now() - scanStartTimeRef.current) / 1000
+          const prompt = resolveScanGuidePrompt(elapsed, {
+            moveHint: GUIDE_TIMING.MOVE_HINT,
+            distanceHint: GUIDE_TIMING.DISTANCE_HINT,
+            timeout: GUIDE_TIMING.TIMEOUT,
+          })
+
+          if (prompt) {
+            speak(prompt)
+          }
 
           if (elapsed > GUIDE_TIMING.TIMEOUT) {
-            speak('바코드를 찾지 못했습니다. 다시 시도해주세요')
             clearGuideInterval()
-          } else if (elapsed > GUIDE_TIMING.DISTANCE_HINT) {
-            speak('제품을 조금 더 가까이 또는 멀리 해보세요')
-          } else if (elapsed > GUIDE_TIMING.MOVE_HINT) {
-            speak('천천히 움직여주세요')
           }
         }, 5000)
       } catch {

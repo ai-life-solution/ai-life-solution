@@ -57,7 +57,6 @@ export const STYLE = {
       'focus-visible:outline-[var(--color-primary)]',
       'cursor-pointer'
     ),
-    BACKDROP: cn('fixed inset-0 z-10'),
     MENU: cn(
       'absolute',
       'top-full',

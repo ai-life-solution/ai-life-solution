@@ -3,12 +3,12 @@
 import { toast } from 'sonner'
 import { create } from 'zustand'
 
+import { sanitizeAndSortHistory } from '@/core/history/historyPolicy'
 import {
   initFoodDB,
   addFoodsHistory,
   getAllFoodsHistory,
   deleteFoodsHistory,
-  preprocessFoodsHistory,
 } from '@/db/foodsHistory'
 import type { FoodHistoryEntry } from '@/types/FoodData'
 
@@ -97,7 +97,7 @@ export const useFoodStore = create<FoodState>()((set, get) => ({
 
   async addFoodsHistoryItem(food) {
     await addFoodsHistory(food)
-    set({ foods: preprocessFoodsHistory([...get().foods, food]) })
+    set({ foods: sanitizeAndSortHistory([...get().foods, food]) })
   },
 
   async removeFoodItem(key) {
@@ -118,7 +118,7 @@ export const useFoodStore = create<FoodState>()((set, get) => ({
           allFoods = await getAllFoodsHistory()
         }
       }
-      set({ foods: preprocessFoodsHistory(allFoods) })
+      set({ foods: sanitizeAndSortHistory(allFoods) })
     } catch (error) {
       const message =
         error instanceof Error ? error.message : 'Unknown error while loading foods history'

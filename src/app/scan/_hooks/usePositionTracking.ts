@@ -2,16 +2,17 @@ import { useCallback, useRef } from 'react'
 
 import Quagga from '@ericblade/quagga2'
 
-import {
-  type Position,
-  POSITION_MESSAGES,
-  SCANNER_CONFIG,
-  VOICE_CONFIG,
-} from '../_constants/scanner'
+import { calculateBarcodePosition, getPositionMessage } from '@/core/scanner/positionCalculator'
+import { shouldAnnouncePosition } from '@/core/scanner/scannerPolicy'
+import type { Position } from '@/core/scanner/types'
+
+import { SCANNER_CONFIG, VOICE_CONFIG } from '../_constants/scanner'
 
 interface UsePositionTrackingProps {
   onPositionDetected: (position: Position) => void
 }
+
+export { getPositionMessage }
 
 export function usePositionTracking({ onPositionDetected }: UsePositionTrackingProps) {
   const positionTrackingRef = useRef<NodeJS.Timeout | null>(null)
@@ -34,14 +35,15 @@ export function usePositionTracking({ onPositionDetected }: UsePositionTrackingP
   const speakPositionWithCooldown = useCallback(
     (position: Position) => {
       const now = Date.now()
+      const shouldAnnounce = shouldAnnouncePosition({
+        nextPosition: position,
+        lastPosition: lastPositionRef.current,
+        now,
+        lastVoiceTime: lastVoiceTimeRef.current,
+        cooldownMs: VOICE_CONFIG.COOLDOWN,
+      })
 
-      // 쿨다운 체크
-      if (now - lastVoiceTimeRef.current < VOICE_CONFIG.COOLDOWN) {
-        return
-      }
-
-      // 같은 position이면 안내 안 함
-      if (lastPositionRef.current === position) {
+      if (!shouldAnnounce) {
         return
       }
 
@@ -102,7 +104,12 @@ export function usePositionTracking({ onPositionDetected }: UsePositionTrackingP
 
             if (!box) return
 
-            const position = calculatePosition(box, video)
+            const position = calculateBarcodePosition(
+              box,
+              { width: video.videoWidth, height: video.videoHeight },
+              { width: video.clientWidth, height: video.clientHeight },
+              { width: SCANNER_CONFIG.QRBOX_WIDTH, height: SCANNER_CONFIG.QRBOX_HEIGHT }
+            )
             speakPositionWithCooldown(position)
           }
         )
@@ -116,55 +123,4 @@ export function usePositionTracking({ onPositionDetected }: UsePositionTrackingP
     startPositionTracking,
     clearPositionTracking,
   }
-}
-
-function calculatePosition(box: number[][], video: HTMLVideoElement): Position {
-  // 1. 바코드 중심점 (비디오 해상도 좌표)
-  const barcodeCenterX = (box[0][0] + box[2][0]) / 2
-  const barcodeCenterY = (box[0][1] + box[2][1]) / 2
-
-  // 2. 비디오 실제 해상도
-  const videoWidth = video.videoWidth
-  const videoHeight = video.videoHeight
-
-  // 3. 비디오 화면 표시 크기 (CSS)
-  const displayWidth = video.clientWidth
-  const displayHeight = video.clientHeight
-
-  // 4. QRBox를 비디오 해상도로 변환
-  const scaleX = videoWidth / displayWidth
-  const scaleY = videoHeight / displayHeight
-
-  const qrboxWidthInVideo = SCANNER_CONFIG.QRBOX_WIDTH * scaleX
-  const qrboxHeightInVideo = SCANNER_CONFIG.QRBOX_HEIGHT * scaleY
-
-  // 5. 비디오 중심점
-  const videoCenterX = videoWidth / 2
-  const videoCenterY = videoHeight / 2
-
-  // 6. QRBox 영역 (비디오 해상도 기준)
-  const qrLeft = videoCenterX - qrboxWidthInVideo / 2
-  const qrRight = videoCenterX + qrboxWidthInVideo / 2
-  const qrTop = videoCenterY - qrboxHeightInVideo / 2
-  const qrBottom = videoCenterY + qrboxHeightInVideo / 2
-
-  // 7. 위치 판정
-  if (barcodeCenterX < qrLeft) {
-    return 'left'
-  }
-  if (barcodeCenterX > qrRight) {
-    return 'right'
-  }
-  if (barcodeCenterY < qrTop) {
-    return 'up'
-  }
-  if (barcodeCenterY > qrBottom) {
-    return 'down'
-  }
-
-  return 'center'
-}
-
-export function getPositionMessage(position: Position): string {
-  return POSITION_MESSAGES[position]
 }
