@@ -69,7 +69,7 @@ export async function chatCompletion(payload: ChatCompletionPayload) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'inception/mercury-2.5',
+        model: 'anthropic/claude-haiku-5.5',
         messages: payload.messages,
         reasoning: payload.reasoning,
       }),
